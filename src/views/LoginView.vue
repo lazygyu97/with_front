@@ -20,6 +20,7 @@
                   >
                   </v-text-field>
                   <v-btn
+                      @click="fnLogin"
                       type="submit"
                       color="blue lighten-1 text-capitalize"
                       depressed
@@ -65,6 +66,27 @@ export default {
   },
   methods: {
     fnLogin() {
+      const data = {
+        username: this.user_id,
+        password: this.user_pw,
+      };
+      this.$axios.post('/api/users/login', data, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json; charset = utf-8'
+        }
+      })
+          .then(response => {
+            console.log(response.data);
+            localStorage.setItem('jwtToken', response.headers.get('Authorization'));
+            localStorage.setItem('refreshToken', response.headers.get('Refreshtoken'));
+            alert(response.headers.get('Refreshtoken'))
+          })
+          .catch(e => {
+            alert(e)
+            console.log('error : ', e)
+          })
+    },
 
       // if (this.user_id === '') {
       //
@@ -76,27 +98,11 @@ export default {
       //   alert('비밀번호를 입력하세요.')
       //   return
       // }
+    addUserShow(){
 
-      const data = {
-        username: this.user_id,
-        password: this.user_pw,
-      };
-      axios.post('/api/users/login',data,{
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json; charset = utf-8'
-        }
-      })
-      .then(response => {
-        console.log(response.data);
-        localStorage.setItem('jwtToken',response.headers.get('Authorization'));
-        localStorage.setItem('refreshToken',response.headers.get('Refreshtoken'));
-        alert(response.headers.get('Refreshtoken'))
-      })
-      .catch(e => {
-        console.log('error : ', e)
-      })
+    },
 
+    test(){
       const data2 = {
         name: "test1",
         color:  "test2",
