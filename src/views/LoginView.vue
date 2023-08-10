@@ -101,7 +101,7 @@ export default {
         console.log(window.localStorage.getItem('accessToken'))
         console.log(Cookies.get("refreshToken"))
         console.log(response.data);
-        await this.$router.push('/home');
+        window.location.href = '/home'
       } catch (error) {
         alert(error.response.data)
         console.log(error.response.data);

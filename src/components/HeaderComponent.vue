@@ -19,11 +19,12 @@
       <v-spacer></v-spacer>
 
 
-      <router-link to="/login">
         <v-btn
+            v-show="isValidUser"
             elevation="2"
-        >Login</v-btn>
-      </router-link>
+            @click="logout"
+        >Logout
+        </v-btn>
 
 
     </v-app-bar>
@@ -31,8 +32,43 @@
   </v-card>
 </template>
 
-<script setup>
+<script>
+import axios from "@/axios/axios-instance";
+import Cookies from 'js-cookie';
 
+export default {
+  data() {
+    return {
+      isValidUser: false
+    }
+  },
+  mounted() {
+    this.checkValidUser();
+  },
+  methods: {
+    async logout() {
+      try {
+        await axios.get("/users/logout");
+        window.localStorage.removeItem("accessToken");
+        Cookies.remove("refreshToken");
+        window.location.href='login';
+      } catch (error) {
+        alert(error)
+      }
+    },
+    async checkValidUser() {
+      try {
+        await axios.get("users")
+            .then(response => {
+              console.log(response.data.username)
+              this.isValidUser=true;
+            })
+      } catch (error) {
+        await this.$router.push('/login');
+      }
+    }
+  },
+}
 </script>
 
 <style scoped lang="scss">
