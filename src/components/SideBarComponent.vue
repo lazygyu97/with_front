@@ -42,7 +42,7 @@ export default {
   data() {
     return {
       items: [
-        {title: 'Boards', icon: 'mdi-home-city'},
+        {title: 'Board', icon: 'mdi-home-city'},
         {title: 'Users', icon: 'mdi-account-group-outline'},
       ],
     }

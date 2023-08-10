@@ -64,6 +64,9 @@ export default {
     }
   },
   methods: {
+    addUserShow(){
+      this.$router.push('/signup');
+    },
     fnLogin() {
 
       // if (this.user_id === '') {
