@@ -17,6 +17,7 @@
 
 
 import SideBarComponent from "@/components/SideBarComponent.vue";
+// import AreaComponent from "@/components/AreaComponent.vue";
 import axios from '@/axios/axios-instance';
 
 
@@ -25,6 +26,7 @@ export default {
   name: 'HomeView',
   components: {
     SideBarComponent,
+    // AreaComponent
   },
   props: {
     showDetailBoard: {}

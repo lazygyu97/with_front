@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app >
     <v-navigation-drawer
         absolute
         permanent
@@ -75,20 +75,6 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-list dense>
-        <v-list-item
-            v-for="item in userColumn"
-            :key="item.title"
-        >
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
     </v-navigation-drawer>
     <!-- 새 보드 추가용 모달 -->
     <!-- 새 보드 추가용 모달 -->
@@ -134,9 +120,6 @@ export default {
     return {
       boardColumn: [
         {title: 'Board', icon: 'mdi-home-city'}
-      ],
-      userColumn: [
-        {title: 'Users', icon: 'mdi-account-group-outline'}
       ],
       userImage: '',
       username: '',
@@ -221,5 +204,8 @@ export default {
 <style scoped lang="scss">
 .v-menu__content {
   z-index: 100; // You can adjust this value as per your needs
+}
+.v-navigation-drawer {
+  overflow-y: hidden !important;
 }
 </style>
