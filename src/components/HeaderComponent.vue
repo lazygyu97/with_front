@@ -50,8 +50,10 @@ export default {
       try {
         await axios.get("/users/logout");
         window.localStorage.removeItem("accessToken");
+        window.localStorage.removeItem("username");
+        window.localStorage.removeItem("userImage");
         Cookies.remove("refreshToken");
-        window.location.href='login';
+        window.location.href='/';
       } catch (error) {
         alert(error)
       }

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="home">
+  <v-card :style="{ backgroundColor: lightBackgroundColor }" class="home">
     <v-row>
       <v-col cols="4">
         <SideBarComponent :boards="boards" @showDetailBoard="showBoardDetail" />
@@ -37,11 +37,33 @@ export default {
     return {
       boards: [],
       areas: [],
+      backgroundColor: 'white',  // 초기값을 white로 설정
     };
   },
   mounted() {
     this.fetchAreas();
   },
+  computed: {
+    lightBackgroundColor() {
+      let color;
+      switch (this.backgroundColor) {
+        case 'Red':
+          color = 'rgba(255, 0, 0, 0.5)';
+          break;
+        case 'Blue':
+          color = 'rgba(0, 0, 255, 0.5)';
+          break;
+        case 'Green':
+          color = 'rgba(0, 255, 0, 0.5)';
+          break;
+          // ... 기타 색상들 ...
+        default:
+          color = 'rgba(255, 255, 255, 0.5)';  // default는 연한 흰색
+      }
+      return color;
+    }
+  }
+  ,
   methods: {
     async fetchAreas() {
       try {
@@ -63,6 +85,7 @@ export default {
               boardData = response.data
             })
         this.areas = boardData.areas;
+        this.backgroundColor = boardData.color;  // boardData.color 값을 backgroundColor에 설정
         console.log(this.areas)
       } catch (error) {
         console.error('Error fetching board:', error);

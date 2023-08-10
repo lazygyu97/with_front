@@ -44,7 +44,6 @@
                 >
                   Sign Up
                 </v-btn>
-
               </div>
             </v-card>
           </v-flex>
@@ -76,7 +75,6 @@ export default {
     async fnLogin() {
 
       if (this.user_id === '') {
-
         alert('ID를 입력하세요.')
         return
       }

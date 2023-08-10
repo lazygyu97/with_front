@@ -64,7 +64,8 @@ router.beforeEach(async (to, from, next) => {
     try {
       await axios.get("users")
           .then(response => {
-            console.log(response.data.username)
+            window.localStorage.setItem('username', response.data.username);
+            window.localStorage.setItem('userImage', response.data.userImage);
             next();
           })
     } catch (error){
