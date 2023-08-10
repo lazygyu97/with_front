@@ -66,7 +66,7 @@ export default {
               this.isValidUser=true;
             })
       } catch (error) {
-        await this.$router.push('/login');
+        await this.$router.push('/');
       }
     }
   },

@@ -1,5 +1,5 @@
 <template>
-  <v-card height="500px">
+  <v-app>
     <v-navigation-drawer
         absolute
         permanent
@@ -90,6 +90,8 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+    <!-- 새 보드 추가용 모달 -->
+    <!-- 새 보드 추가용 모달 -->
     <v-dialog v-model="isAddBoardModalOpen" max-width="600px">
       <v-card>
         <v-card-title>
@@ -115,7 +117,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-card>
+  </v-app>
+
 </template>
 <script>
 import axios from '@/axios/axios-instance';
