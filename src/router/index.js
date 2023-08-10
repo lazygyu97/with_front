@@ -9,41 +9,24 @@ const routes = [
   {
     path: '/',
     name: 'login',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/LoginView.vue')
-  },
-  {
-    path: '/login',
-    name: 'login',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/LoginView.vue')
+    component: () => import('../views/LoginView.vue')
   },
   {
     path: '/signup',
     name: 'signup',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/SignupView.vue')
-  },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
-    meta: {requiresAuth: true}
+    component: () => import('../views/SignupView.vue')
   },
   {
     path: '/home',
     name: 'home',
     component: HomeView,
-    meta: {requiresAuth: true}
+    meta: {requiresAuth: true},
+    children: [
+
+      { path: '/board',   component: () => import( '../views/BoardView.vue') },
+      { path: '/user',   component: () => import( '../views/UserView.vue') },
+
+    ]
   },
   {
     path: '/board',

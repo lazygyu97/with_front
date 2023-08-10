@@ -1,5 +1,5 @@
 <template>
-  <v-card height="500px">
+  <v-app>
     <v-navigation-drawer
         absolute
         permanent
@@ -90,7 +90,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-card>
+  </v-app>
+
 </template>
 <script>
 import axios from '@/axios/axios-instance';
@@ -145,10 +146,10 @@ export default {
       try {
         // 보드 추가 로직
         await axios.post("/boards", this.newBoard)
-            .then(response => {
-              console.log(response.data)
-              window.location.href = '/home'
-            })
+        .then(response => {
+          console.log(response.data)
+          window.location.href = '/home'
+        })
         // 보드 추가 성공 시 모달 닫기
         this.isAddBoardModalOpen = false;
       } catch (error) {

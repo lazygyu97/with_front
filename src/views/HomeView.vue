@@ -1,34 +1,33 @@
 <template>
-  <v-card class="home">
-    <v-row>
-      <v-col cols="4">
-        <SideBarComponent :boards="boards" @showDetailBoard="showBoardDetail" />
-      </v-col>
-      <v-col cols="8">
-        <v-row>
-          <v-col cols="4" v-for="(area, index) in areas" :key="index">
-            <AreaComponent :area="area" />
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-  </v-card>
+  <v-app>
+    <v-navigation-drawer app>
+      <SideBarComponent :boards="boards" @showDetailBoard="showBoardDetail"/>
+    </v-navigation-drawer>
+    <v-content>
+      <router-view/>
+    </v-content>
+  </v-app>
 </template>
 
+
+<!--  </v-app>-->
+
+<!--          <v-row>-->
+<!--            <v-col cols="4" v-for="(area, index) in areas" :key="index">-->
+<!--              <AreaComponent :area="area" />-->
+<!--            </v-col>-->
+<!--          </v-row>-->
 <script>
 
 
 import SideBarComponent from "@/components/SideBarComponent.vue";
-import AreaComponent from "@/components/AreaComponent.vue";
 import axios from '@/axios/axios-instance';
-
 
 export default {
 
   name: 'HomeView',
   components: {
-    SideBarComponent,
-    AreaComponent
+    SideBarComponent
   },
   props: {
     showDetailBoard: {}
@@ -46,10 +45,10 @@ export default {
     async fetchAreas() {
       try {
         await axios.get('/boards')
-            .then(response => {
-              console.log(response.data.boards);
-              this.boards = response.data.boards;
-            }); // API 요청 예시
+        .then(response => {
+          console.log(response.data.boards);
+          this.boards = response.data.boards;
+        }); // API 요청 예시
       } catch (error) {
         console.error(error);
       }
@@ -59,9 +58,9 @@ export default {
       try {
         let boardData;
         await axios.get("/boards/" + boardId)
-            .then(response => {
-              boardData = response.data
-            })
+        .then(response => {
+          boardData = response.data
+        })
         this.areas = boardData.areas;
         console.log(this.areas)
       } catch (error) {
