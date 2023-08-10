@@ -80,19 +80,6 @@ export default {
       this.$router.push('/signup');
     },
     async fnLogin() {
-
-      // if (this.user_id === '') {
-      //
-      //   alert('ID를 입력하세요.')
-      //   return
-      // }
-      //
-      // if (this.user_pw === '') {
-      //   alert('비밀번호를 입력하세요.')
-      //   return
-      // }
-
-
       const data = {
         username: this.user_id,
         password: this.user_pw,
@@ -108,7 +95,7 @@ export default {
         console.log(window.localStorage.getItem('accessToken'))
         console.log(Cookies.get("refreshToken"))
         console.log(response.data);
-        await this.$router.push('/home');
+        window.location.href = '/home'
       } catch (error) {
         alert(error.response.data)
         console.log(error.response.data);
