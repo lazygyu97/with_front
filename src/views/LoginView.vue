@@ -8,18 +8,20 @@
             <v-card>
               <div class="pa-10">
                 <h1 style="text-align: center" class="mb-10">Login</h1>
-                <form>
                   <v-text-field
+                      v-model="user_id"
                       label="ID"
                       prepend-inner-icon="mdi-account"
                   ></v-text-field>
                   <v-text-field
+                      v-model="user_pw"
                       prepend-inner-icon="mdi-lock"
                       type="password"
                       label="Password"
                   >
                   </v-text-field>
                   <v-btn
+                      @click="fnLogin"
                       type="submit"
                       color="blue lighten-1 text-capitalize"
                       depressed
@@ -30,17 +32,26 @@
                   >
                     Login
                   </v-btn>
-                  <v-btn
-                      @click="addUserShow"
-                      color="blue lighten-1 text-capitalize"
-                      depressed
-                      large
-                      block
-                      dark
-                  >
-                    Sign Up
-                  </v-btn>
-                </form>
+                <v-btn
+                    color="blue lighten-1 text-capitalize"
+                    depressed
+                    large
+                    block
+                    dark
+                >
+                  Sign Up
+                </v-btn>
+
+                <v-btn
+                    @click="test"
+                    color="blue lighten-1 text-capitalize"
+                    depressed
+                    large
+                    block
+                    dark
+                >
+                  test
+                </v-btn>
               </div>
             </v-card>
           </v-flex>
@@ -53,21 +64,22 @@
 <script>
 
 
-import axios from "axios";
+import axios from '@/axios/axios-instance';
+import Cookies from 'js-cookie';
 
 export default {
   data() {
     return {
       user_id: '',
       user_pw: '',
-      token:''
+      token: ''
     }
   },
   methods: {
-    addUserShow(){
+   addUserShow(){
       this.$router.push('/signup');
     },
-    fnLogin() {
+    async fnLogin() {
 
       // if (this.user_id === '') {
       //
@@ -80,52 +92,55 @@ export default {
       //   return
       // }
 
+
       const data = {
         username: this.user_id,
         password: this.user_pw,
       };
-      axios.post('/api/users/login',data,{
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json; charset = utf-8'
-        }
-      })
-      .then(response => {
-        console.log(response.data);
-        localStorage.setItem('jwtToken',response.headers.get('Authorization'));
-        localStorage.setItem('refreshToken',response.headers.get('Refreshtoken'));
-        alert(response.headers.get('Refreshtoken'))
-      })
-      .catch(e => {
-        console.log('error : ', e)
-      })
+      
+      try {
+        const response = await axios.post("/users/login", data);
+        const accessToken = response.headers.get("Authorization")
+        const refreshToken = response.headers.get("RefreshToken");
+        window.localStorage.setItem('accessToken', accessToken)
+        Cookies.set("refreshToken", refreshToken)
 
+        console.log(window.localStorage.getItem('accessToken'))
+        console.log(Cookies.get("refreshToken"))
+        console.log(response.data);
+        await this.$router.push('/home');
+      } catch (error) {
+        alert(error.response.data)
+        console.log(error.response.data);
+      }
+    },
+
+    async test() {
       const data2 = {
         name: "test1",
-        color:  "test2",
-        info:  "test3"
+        color: "test2",
+        info: "test3"
       };
 
-      axios.post('/api/boards',data2,{
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json; charset = utf-8',
-          'Authorization': localStorage.getItem('jwtToken'),
-          'Refreshtoken': localStorage.getItem('refreshToken')
-        }
-      })
-      .then(response => {
+      try {
+        axios.post('/boards', data2)
 
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log('error : ', e)
-      })
+            .then(response => {
+              console.log(response.data);
+            })
+            .catch(e => {
+              console.log('error : ', e)
+            })
+      } catch (error) {
+        alert(error.response.data)
+        console.log(error.response.data);
+      }
 
 
-    }
+    },
   }
 }
+
 </script>
 
 <style>
