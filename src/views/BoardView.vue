@@ -1,22 +1,27 @@
 <template>
   <v-app>
-    <v-row>
-      <v-col cols="4" v-for="(area, index) in areas" :key="index">
-        <AreaComponent :area="area"/>
-      </v-col>
-      <AddAreaComponent/>
-    </v-row>
+    <v-app-bar app style="margin-top: 64px">
+      <BoardHeaderComponent />
+    </v-app-bar>
 
+    <v-main >
+      <add-area-component></add-area-component>
+    </v-main>
+
+    <v-footer app>
+    </v-footer>
   </v-app>
 </template>
 
 <script>
 import AreaComponent from "@/components/AreaComponent.vue";
 import AddAreaComponent from "@/components/AddAreaComponent.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
+import BoardHeaderComponent from "@/components/BoardHeaderComponent.vue";
 
 export default {
   name: "BoardView",
-  components: {AddAreaComponent, AreaComponent}
+  components: {AddAreaComponent, AreaComponent, HeaderComponent,BoardHeaderComponent}
 }
 </script>
 

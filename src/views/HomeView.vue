@@ -3,12 +3,9 @@
     <v-navigation-drawer app>
       <SideBarComponent :boards="boards" @showDetailBoard="showBoardDetail"/>
     </v-navigation-drawer>
-    <v-content :style="{ backgroundColor: lightBackgroundColor }">
-      <router-view/>
-      <!--      test        -->
-      <v-card class="home">
-      </v-card>
-      <!--      test      -->
+    <v-content style="margin: 0;padding: 0;">
+      <BoardView style="padding: 0px" :style="{ backgroundColor: lightBackgroundColor }"/>
+
     </v-content>
   </v-app>
 </template>
@@ -18,12 +15,13 @@
 
 import SideBarComponent from "@/components/SideBarComponent.vue";
 import axios from '@/axios/axios-instance';
-
+import BoardView from "@/views/BoardView.vue";
 
 export default {
 
   name: 'HomeView',
   components: {
+    BoardView,
     SideBarComponent,
   },
   props: {
@@ -64,10 +62,10 @@ export default {
     async fetchAreas() {
       try {
         await axios.get('/boards')
-            .then(response => {
-              console.log(response.data.boards);
-              this.boards = response.data.boards;
-            }); // API 요청 예시
+        .then(response => {
+          console.log(response.data.boards);
+          this.boards = response.data.boards;
+        }); // API 요청 예시
       } catch (error) {
         console.error(error);
       }
@@ -77,9 +75,9 @@ export default {
       try {
         let boardData;
         await axios.get("/boards/" + boardId)
-            .then(response => {
-              boardData = response.data
-            })
+        .then(response => {
+          boardData = response.data
+        })
         this.areas = boardData.areas;
         this.backgroundColor = boardData.color;  // boardData.color 값을 backgroundColor에 설정
         console.log(this.areas)
