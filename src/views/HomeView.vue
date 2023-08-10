@@ -3,31 +3,20 @@
     <v-navigation-drawer app>
       <SideBarComponent :boards="boards" @showDetailBoard="showBoardDetail"/>
     </v-navigation-drawer>
-    <v-content>
+    <v-content :style="{ backgroundColor: lightBackgroundColor }">
       <router-view/>
+      <!--      test        -->
+      <v-card class="home">
+      </v-card>
+      <!--      test      -->
     </v-content>
   </v-app>
-<!--  <v-card class="home">-->
-<!--    <v-row>-->
-<!--      <v-col cols="4">-->
-<!--        <SideBarComponent :boards="boards" @showDetailBoard="showBoardDetail" />-->
-<!--      </v-col>-->
-<!--      <v-col cols="8">-->
-<!--        <v-row>-->
-<!--          <v-col cols="4" v-for="(area, index) in areas" :key="index">-->
-<!--            <AreaComponent :area="area" />-->
-<!--          </v-col>-->
-<!--        </v-row>-->
-<!--      </v-col>-->
-<!--    </v-row>-->
-<!--  </v-card>-->
 </template>
 
 <script>
 
 
 import SideBarComponent from "@/components/SideBarComponent.vue";
-import AreaComponent from "@/components/AreaComponent.vue";
 import axios from '@/axios/axios-instance';
 
 
@@ -36,7 +25,6 @@ export default {
   name: 'HomeView',
   components: {
     SideBarComponent,
-    AreaComponent
   },
   props: {
     showDetailBoard: {}
