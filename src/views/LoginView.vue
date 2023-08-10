@@ -76,11 +76,28 @@ export default {
     }
   },
   methods: {
+   addUserShow(){
+      this.$router.push('/signup');
+    },
     async fnLogin() {
+
+      // if (this.user_id === '') {
+      //
+      //   alert('ID를 입력하세요.')
+      //   return
+      // }
+      //
+      // if (this.user_pw === '') {
+      //   alert('비밀번호를 입력하세요.')
+      //   return
+      // }
+
+
       const data = {
         username: this.user_id,
         password: this.user_pw,
       };
+      
       try {
         const response = await axios.post("/users/login", data);
         const accessToken = response.headers.get("Authorization")
