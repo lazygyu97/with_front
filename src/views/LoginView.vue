@@ -8,31 +8,34 @@
             <v-card>
               <div class="pa-10">
                 <h1 style="text-align: center" class="mb-10">Login</h1>
-                  <v-text-field
-                      v-model="user_id"
-                      label="ID"
-                      prepend-inner-icon="mdi-account"
-                  ></v-text-field>
-                  <v-text-field
-                      v-model="user_pw"
-                      prepend-inner-icon="mdi-lock"
-                      type="password"
-                      label="Password"
-                  >
-                  </v-text-field>
-                  <v-btn
-                      @click="fnLogin"
-                      type="submit"
-                      color="blue lighten-1 text-capitalize"
-                      depressed
-                      large
-                      block
-                      dark
-                      class="mb-3"
-                  >
-                    Login
-                  </v-btn>
+                <v-text-field
+                    v-model="user_id"
+                    label="ID"
+                    prepend-inner-icon="mdi-account"
+                ></v-text-field>
+                <v-text-field
+                    :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
+                    :type="show3 ? 'text' : 'password'"
+                    v-model="user_pw"
+                    prepend-inner-icon="mdi-lock"
+                    @click:append="show3 = !show3"
+                    label="Password"
+                >
+                </v-text-field>
                 <v-btn
+                    @click="fnLogin"
+                    type="submit"
+                    color="blue lighten-1 text-capitalize"
+                    depressed
+                    large
+                    block
+                    dark
+                    class="mb-3"
+                >
+                  Login
+                </v-btn>
+                <v-btn
+                    @click="addUserShow"
                     color="blue lighten-1 text-capitalize"
                     depressed
                     large
@@ -42,16 +45,6 @@
                   Sign Up
                 </v-btn>
 
-                <v-btn
-                    @click="test"
-                    color="blue lighten-1 text-capitalize"
-                    depressed
-                    large
-                    block
-                    dark
-                >
-                  test
-                </v-btn>
               </div>
             </v-card>
           </v-flex>
@@ -70,34 +63,34 @@ import Cookies from 'js-cookie';
 export default {
   data() {
     return {
+      show3: false,
       user_id: '',
       user_pw: '',
       token: ''
     }
   },
   methods: {
-   addUserShow(){
+    addUserShow() {
       this.$router.push('/signup');
     },
     async fnLogin() {
 
-      // if (this.user_id === '') {
-      //
-      //   alert('ID를 입력하세요.')
-      //   return
-      // }
-      //
-      // if (this.user_pw === '') {
-      //   alert('비밀번호를 입력하세요.')
-      //   return
-      // }
+      if (this.user_id === '') {
 
+        alert('ID를 입력하세요.')
+        return
+      }
+
+      if (this.user_pw === '') {
+        alert('비밀번호를 입력하세요.')
+        return
+      }
 
       const data = {
         username: this.user_id,
         password: this.user_pw,
       };
-      
+
       try {
         const response = await axios.post("/users/login", data);
         const accessToken = response.headers.get("Authorization")
@@ -113,31 +106,7 @@ export default {
         alert(error.response.data)
         console.log(error.response.data);
       }
-    },
-
-    async test() {
-      const data2 = {
-        name: "test1",
-        color: "test2",
-        info: "test3"
-      };
-
-      try {
-        axios.post('/boards', data2)
-
-            .then(response => {
-              console.log(response.data);
-            })
-            .catch(e => {
-              console.log('error : ', e)
-            })
-      } catch (error) {
-        alert(error.response.data)
-        console.log(error.response.data);
-      }
-
-
-    },
+    }
   }
 }
 
