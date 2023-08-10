@@ -7,17 +7,23 @@
         scroll-target="#scrolling-techniques-7"
     >
 
-      <router-link to="/home">   <v-img
-          lazy-src="../assets/logo.png"
-          max-height="100"
-          max-width="180"
-          src="../assets/logo.png"
-      ></v-img></router-link>
+      <router-link to="/home">
+        <v-img
+            lazy-src="../assets/logo.png"
+            max-height="100"
+            max-width="180"
+            src="../assets/logo.png"
+        ></v-img>
+      </router-link>
 
       <v-spacer></v-spacer>
 
 
-      <router-link to="/login">Login</router-link>
+      <router-link to="/login">
+        <v-btn
+            elevation="2"
+        >Login</v-btn>
+      </router-link>
 
 
     </v-app-bar>
@@ -30,7 +36,7 @@
 </script>
 
 <style scoped lang="scss">
-.overflow-hidden{
+.overflow-hidden {
   width: 100%;
   height: 64px;
 }
