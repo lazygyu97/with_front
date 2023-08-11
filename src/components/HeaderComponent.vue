@@ -53,6 +53,7 @@ export default {
       window.localStorage.removeItem("userImage");
       Cookies.remove("refreshToken");
       window.location.href = '/';
+
     },
     async checkValidUser() {
       try {

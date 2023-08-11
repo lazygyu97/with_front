@@ -4,8 +4,9 @@
         absolute
         permanent
         left
+        class="sideBar"
     >
-      <template v-slot:prepend>
+      <template  v-slot:prepend>
         <v-list-item two-line>
           <v-list-item-avatar>
             <img :src="userImage" alt="profile">
@@ -203,8 +204,5 @@ export default {
 <style scoped lang="scss">
 .v-menu__content {
   z-index: 100; // You can adjust this value as per your needs
-}
-.v-navigation-drawer {
-  overflow-y: hidden !important;
 }
 </style>

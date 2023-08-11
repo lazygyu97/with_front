@@ -1,10 +1,17 @@
 <template>
+
   <v-app>
-    <v-navigation-drawer app>
-      <SideBarComponent :boards="boards" @showDetailBoard="showBoardDetail"/>
+    <v-navigation-drawer style="overflow: hidden !important;" app>
+      <SideBarComponent :boards="boards" @showDetailBoard="showBoardDetail" />
     </v-navigation-drawer>
     <v-content style="margin: 0;padding: 0;">
-      <BoardView style="padding: 0" :board="detailBoard" :style="{ backgroundColor: lightBackgroundColor }"/>
+      <BoardView
+          style="padding: 0px"
+          ref="board"
+          :board="board"
+          :style="{ backgroundColor: lightBackgroundColor }"
+
+      />
     </v-content>
   </v-app>
 </template>
@@ -31,6 +38,8 @@ export default {
   data() {
     return {
       boards: [],
+      areas: [],
+      board: [],
       backgroundColor: 'white',  // 초기값을 white로 설정
       detailBoard:[],
     };
@@ -46,7 +55,7 @@ export default {
           color = 'rgba(255, 0, 0, 0.5)';
           break;
         case 'Blue':
-          color = 'rgba(0, 0, 255, 0.5)';
+          color = 'rgba(85,85,250,0.5)';
           break;
         case 'Green':
           color = 'rgba(0, 255, 0, 0.5)';
@@ -75,15 +84,15 @@ export default {
       try {
         await axios.get("/boards/" + boardId)
         .then(response => {
-          this.detailBoard = response.data
+          this.board = response.data
         })
-        // this.areas = this.detailBoard.areas;
-        this.backgroundColor = this.detailBoard.color;  // boardData.color 값을 backgroundColor에 설정
-        console.log(this.detailBoard)
+
+        this.backgroundColor = this.board.color;  // boardData.color 값을 backgroundColor에 설정
       } catch (error) {
         console.error('Error fetching board:', error);
       }
     },
+
   },
 }
 </script>

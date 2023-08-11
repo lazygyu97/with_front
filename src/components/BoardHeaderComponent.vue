@@ -7,13 +7,13 @@
         scroll-target="#scrolling-techniques-7"
     >
       {{ board.name }}
+
       <v-spacer></v-spacer>
 
       <v-btn
           v-show="isValidUser"
           elevation="2"
           @click="openEditModal"
-      >edit
       </v-btn>
       <v-btn
           v-show="isValidUser"
