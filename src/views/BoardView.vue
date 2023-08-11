@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app style="margin-top: 64px">
-      <BoardHeaderComponent />
+      <BoardHeaderComponent :board="board"/>
     </v-app-bar>
 
     <v-main >
@@ -20,6 +20,12 @@ import HeaderComponent from "@/components/HeaderComponent.vue";
 import BoardHeaderComponent from "@/components/BoardHeaderComponent.vue";
 
 export default {
+  props: {
+    board: {
+      type: Object,
+      required: true,
+    },
+  },
   name: "BoardView",
   components: {AddAreaComponent, AreaComponent, HeaderComponent,BoardHeaderComponent}
 }

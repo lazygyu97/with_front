@@ -4,8 +4,7 @@
       <SideBarComponent :boards="boards" @showDetailBoard="showBoardDetail"/>
     </v-navigation-drawer>
     <v-content style="margin: 0;padding: 0;">
-      <BoardView style="padding: 0px" :style="{ backgroundColor: lightBackgroundColor }"/>
-
+      <BoardView style="padding: 0" :board="detailBoard" :style="{ backgroundColor: lightBackgroundColor }"/>
     </v-content>
   </v-app>
 </template>
@@ -32,8 +31,8 @@ export default {
   data() {
     return {
       boards: [],
-      areas: [],
       backgroundColor: 'white',  // 초기값을 white로 설정
+      detailBoard:[],
     };
   },
   mounted() {
@@ -52,7 +51,6 @@ export default {
         case 'Green':
           color = 'rgba(0, 255, 0, 0.5)';
           break;
-          // ... 기타 색상들 ...
         default:
           color = 'rgba(255, 255, 255, 0.5)';  // default는 연한 흰색
       }
@@ -75,14 +73,13 @@ export default {
     async showBoardDetail(boardId) {
       // 보드의 데이터를 detailBoard에 설정합니다.
       try {
-        let boardData;
         await axios.get("/boards/" + boardId)
         .then(response => {
-          boardData = response.data
+          this.detailBoard = response.data
         })
-        this.areas = boardData.areas;
-        this.backgroundColor = boardData.color;  // boardData.color 값을 backgroundColor에 설정
-        console.log(this.areas)
+        // this.areas = this.detailBoard.areas;
+        this.backgroundColor = this.detailBoard.color;  // boardData.color 값을 backgroundColor에 설정
+        console.log(this.detailBoard)
       } catch (error) {
         console.error('Error fetching board:', error);
       }
