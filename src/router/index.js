@@ -23,14 +23,13 @@ const routes = [
     meta: {requiresAuth: true},
     children: [
 
-      { path: '/board',   component: () => import( '../views/BoardView.vue') },
-      { path: '/user',   component: () => import( '../views/UserView.vue') },
+      { path: '/home/board',   component: () => import( '../views/BoardView.vue') }
 
     ]
   },
   {
     path: '/board',
-    name: 'home',
+    name: 'board',
     component: HomeView,
     meta: {requiresAuth: true}
   }

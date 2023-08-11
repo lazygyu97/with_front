@@ -1,11 +1,12 @@
 <template>
-  <v-app>
+  <v-app  >
     <v-navigation-drawer
         absolute
         permanent
         left
+        class="sideBar"
     >
-      <template v-slot:prepend>
+      <template  v-slot:prepend>
         <v-list-item two-line>
           <v-list-item-avatar>
             <img :src="userImage" alt="profile">
@@ -222,4 +223,7 @@ export default {
 .v-menu__content {
   z-index: 100; // You can adjust this value as per your needs
 }
+
+
+
 </style>
