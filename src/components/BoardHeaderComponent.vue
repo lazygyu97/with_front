@@ -11,12 +11,13 @@
       <v-spacer></v-spacer>
 
       <v-btn
-          v-show="isValidUser"
+          v-show="isAuthor"
           elevation="2"
           @click="openEditModal"
+      >edit
       </v-btn>
       <v-btn
-          v-show="isValidUser"
+          v-show="isAuthor"
           elevation="2"
           @click="openShareModal"
       >share
@@ -101,10 +102,13 @@ export default {
       type: Object,
       required: true,
     },
+    isAuthor: {
+      type: Boolean,
+      required: true
+    }
   },
   data() {
     return {
-      isValidUser: false,
       isEditModalOpen: false,  // to control the modal
       isShareModalOpen: false, // to control the share modal
       colorPresets: ['Red', 'Blue', 'Green', 'Black', 'Purple'],
@@ -129,7 +133,7 @@ export default {
       },
       deep: true,
       immediate: true
-    }
+    },
   },
   methods: {
     openEditModal() {
@@ -151,13 +155,12 @@ export default {
         } else {
           await axios.post("/boards", this.newBoard);
         }
-        window.location.href = '/home';
-        this.isAddBoardModalOpen = false;
+        // window.location.href = '/home';
+        this.isEditModalOpen = false;
+        this.$emit('boardChanged', this.newBoard);
       } catch (error) {
-        console.error(error);
+        alert(error);
       }
-      // After updating, you can close the modal:
-      this.isEditModalOpen = false;
     },
     async deleteBoard() {
       try {
@@ -168,9 +171,8 @@ export default {
               window.location.href = '/home'
             })
       } catch (error) {
-        console.error(error);
+        alert(error);
       }
-      this.isEditModalOpen = false;
     },
     async checkValidUser() {
       try {

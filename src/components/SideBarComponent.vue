@@ -18,8 +18,8 @@
           </v-list-item-content>
         </v-list-item>
       </template>
-
       <v-divider></v-divider>
+<!--      나의 보드 탭-->
       <v-list dense>
         <v-list-item
             v-for="item in boardColumn"
@@ -38,7 +38,7 @@
           </v-btn>
         </v-list-item>
       </v-list>
-      <!--      보드 이름 불러오기-->
+      <!--      나의 보드 이름 불러오기-->
       <v-list dense>
         <v-list-item
             v-for="board in boards"
@@ -67,11 +67,47 @@
                   <v-list-item @click="openUpdateModal(board)">
                     <v-list-item-title>Update</v-list-item-title>
                   </v-list-item>
-                  <v-list-item @click="deleteBoard(board.id)">
+                  <v-list-item @click="deleteBoard(board)">
                     <v-list-item-title>Delete</v-list-item-title>
                   </v-list-item>
                 </v-menu>
               </v-flex>
+            </v-layout>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+<!--      협력자로 등록된 보드 탭-->
+      <v-divider></v-divider>
+      <v-list dense>
+        <v-list-item
+            v-for="item in myBoardColumn"
+            :key="item.title"
+        >
+          <v-list-item-icon @click="showWithBoards">
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content @click="showWithBoards">
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+      <!--     협력자로 등록된 보드 이름 불러오기-->
+      <v-list dense>
+        <v-list-item
+            v-for="board in withBoards"
+            :key="board.id"
+            v-show="isShowWithBoards"
+            @click="showDetailBoard(board)"
+        >
+          <v-list-item-content>
+            <v-layout row align-center>
+              <v-flex xs6 class="text-center">
+                <v-list-item-title>
+                  {{ board.name }}
+                </v-list-item-title>
+              </v-flex>
+              <v-spacer></v-spacer>
             </v-layout>
           </v-list-item-content>
         </v-list-item>
@@ -106,10 +142,19 @@
 </template>
 <script>
 import axios from '@/axios/axios-instance';
+import BoardView from "@/views/BoardView";
 
 export default {
+  components: {
+    BoardView,
+    // AreaComponent
+  },
   props: {
     boards: {
+      type: Array,
+      required: true,
+    },
+    withBoards: {
       type: Array,
       required: true,
     },
@@ -117,11 +162,15 @@ export default {
   data() {
     return {
       boardColumn: [
-        {title: 'Board', icon: 'mdi-home-city'}
+        {title: 'MyBoard', icon: 'mdi-home-city'}
+      ],
+      myBoardColumn: [
+        {title: 'WithBoard', icon: 'mdi-home-city'}
       ],
       userImage: '',
       username: '',
       isShowBoards: false,
+      isShowWithBoards: false,
       newBoard: {
         name: '',
         color: '',
@@ -141,6 +190,10 @@ export default {
     async showBoards() {
       this.isShowBoards = !this.isShowBoards;
       console.log(this.isShowBoards)
+    },
+    async showWithBoards() {
+      this.isShowWithBoards = !this.isShowWithBoards;
+      console.log(this.isShowWithBoards)
     },
     async showDetailBoard(board) {
       try {
@@ -172,24 +225,29 @@ export default {
           await axios.post("/boards", this.newBoard);
         }
         // test
-        this.$emit('boardChanged');
+        this.$emit('boardChanged', this.newBoard);
+        this.newBoard = {
+          name: '',
+          color: '',
+          info: ''
+        }
         // window.location.href = '/home';
         this.isAddBoardModalOpen = false;
       } catch (error) {
-        console.error(error);
+        alert(error);
       }
     },
-    async deleteBoard(boardId) {
+    async deleteBoard(board) {
       // Logic to delete the board with given id
       try {
         // 보드 삭제
-        await axios.delete("/boards/" + boardId)
+        await axios.delete("/boards/" + board.id)
             .then(response => {
               console.log(response.data)
             })
-        this.$emit('boardChanged');
+        window.location.href = "/home"
       } catch (error) {
-        console.error(error);
+        alert(error);
       }
     },
     openUpdateModal(board) {

@@ -6,7 +6,6 @@
         elevate-on-scroll
         scroll-target="#scrolling-techniques-7"
     >
-
       <router-link to="/home">
         <v-img
             lazy-src="../assets/logo.png"
@@ -15,20 +14,14 @@
             src="../assets/logo.png"
         ></v-img>
       </router-link>
-
       <v-spacer></v-spacer>
-
-
         <v-btn
             v-show="isValidUser"
             elevation="2"
             @click="logout"
         >Logout
         </v-btn>
-
-
     </v-app-bar>
-
   </v-card>
 </template>
 
@@ -47,13 +40,12 @@ export default {
     this.checkValidUser();
   },
   methods: {
-    logout() {
+    async logout() {
       window.localStorage.removeItem("accessToken");
       window.localStorage.removeItem("username");
       window.localStorage.removeItem("userImage");
       Cookies.remove("refreshToken");
       window.location.href = '/';
-
     },
     async checkValidUser() {
       try {
