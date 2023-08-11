@@ -68,7 +68,24 @@ export default {
       token: ''
     }
   },
+  mounted() {
+    this.logout()
+  },
   methods: {
+    async logout() {
+      try {
+        if (window.localStorage.getItem("accessToken") !== null) {
+          await axios.get("/users/logout");
+        }
+        window.localStorage.removeItem("accessToken");
+        window.localStorage.removeItem("username");
+        window.localStorage.removeItem("userImage");
+        Cookies.remove("refreshToken");
+      } catch (error) {
+        alert(error)
+      }
+    }
+    ,
     addUserShow() {
       this.$router.push('/signup');
     },
@@ -90,16 +107,29 @@ export default {
       };
 
       try {
-        const response = await axios.post("/users/login", data);
-        const accessToken = response.headers.get("Authorization")
-        const refreshToken = response.headers.get("RefreshToken");
-        window.localStorage.setItem('accessToken', accessToken)
-        Cookies.set("refreshToken", refreshToken)
-
+        await axios.post("/users/login", data)
+            .then(response => {
+                  const accessToken = response.headers.get("Authorization")
+                  const refreshToken = response.headers.get("RefreshToken");
+                  if (accessToken !== undefined && refreshToken !== undefined) {
+                    window.localStorage.setItem('accessToken', accessToken)
+                    Cookies.set("refreshToken", refreshToken)
+                    window.location.href = '/home'
+                  }
+                }
+            ).catch(error => {
+              console.log(error)
+              window.location.href="/"
+            })
+        // const accessToken = response.headers.get("Authorization")
+        // const refreshToken = response.headers.get("RefreshToken");
+        // if (accessToken !== null && refreshToken !== null) {
+        //   window.localStorage.setItem('accessToken', accessToken)
+        //   Cookies.set("refreshToken", refreshToken)
+        // }
         console.log(window.localStorage.getItem('accessToken'))
         console.log(Cookies.get("refreshToken"))
-        console.log(response.data);
-        window.location.href = '/home'
+        // console.log(response.data);
       } catch (error) {
         alert(error.response.data)
         console.log(error.response.data);

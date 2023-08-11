@@ -34,9 +34,10 @@
 
 <script>
 import axios from "@/axios/axios-instance";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 export default {
+
   data() {
     return {
       isValidUser: false
@@ -46,24 +47,23 @@ export default {
     this.checkValidUser();
   },
   methods: {
-    async logout() {
-      try {
-        await axios.get("/users/logout");
-        window.localStorage.removeItem("accessToken");
-        window.localStorage.removeItem("username");
-        window.localStorage.removeItem("userImage");
-        Cookies.remove("refreshToken");
-        window.location.href='/home';
-      } catch (error) {
-        alert(error)
-      }
+    logout() {
+      window.localStorage.removeItem("accessToken");
+      window.localStorage.removeItem("username");
+      window.localStorage.removeItem("userImage");
+      Cookies.remove("refreshToken");
+      window.location.href = '/';
+
     },
     async checkValidUser() {
       try {
+        if(window.localStorage.getItem("username") !== null){
+          this.isValidUser = true;
+        }
         await axios.get("users")
             .then(response => {
               console.log(response.data.username)
-              this.isValidUser=true;
+              this.isValidUser = true;
             })
       } catch (error) {
         await this.$router.push('/');

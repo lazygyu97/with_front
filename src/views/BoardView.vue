@@ -1,9 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app style="margin-top: 64px">
-      <BoardHeaderComponent
-          :name=this.board.name
-      />
+      <BoardHeaderComponent :board="board"/>
     </v-app-bar>
 
     <v-main style="padding: 0px">
@@ -136,8 +134,12 @@ import BoardHeaderComponent from "@/components/BoardHeaderComponent.vue";
 import axios from "@/axios/axios-instance";
 
 export default {
-
-  props: ["board"],
+  props: {
+    board: {
+      type: Object,
+      required: true,
+    },
+  },
   name: "BoardView",
   components: {AddAreaComponent, AreaComponent, HeaderComponent, BoardHeaderComponent},
   data() {

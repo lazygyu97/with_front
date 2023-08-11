@@ -52,8 +52,8 @@ router.beforeEach(async (to, from, next) => {
           })
     } catch (error){
       console.log(error);
-      next('/login');
       alert("로그인이 필요합니다.")
+      window.location.href='/';
     }
   } else {
     next();

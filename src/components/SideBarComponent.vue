@@ -1,5 +1,5 @@
 <template>
-  <v-app  >
+  <v-app >
     <v-navigation-drawer
         absolute
         permanent
@@ -76,23 +76,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-list dense>
-        <v-list-item
-            v-for="item in userColumn"
-            :key="item.title"
-        >
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
     </v-navigation-drawer>
-    <!-- 새 보드 추가용 모달 -->
-    <!-- 새 보드 추가용 모달 -->
     <v-dialog v-model="isAddBoardModalOpen" max-width="600px">
       <v-card>
         <v-card-title>
@@ -101,7 +85,6 @@
         <v-card-text>
           <v-text-field v-model="newBoard.name" label="Name"></v-text-field>
 
-          <!-- 프리셋 컬러 선택 -->
           <v-select
               v-model="newBoard.color"
               :items="colorPresets"
@@ -135,9 +118,6 @@ export default {
     return {
       boardColumn: [
         {title: 'Board', icon: 'mdi-home-city'}
-      ],
-      userColumn: [
-        {title: 'Users', icon: 'mdi-account-group-outline'}
       ],
       userImage: '',
       username: '',
@@ -191,7 +171,9 @@ export default {
         } else {
           await axios.post("/boards", this.newBoard);
         }
-        window.location.href = '/home';
+        // test
+        this.$emit('boardChanged');
+        // window.location.href = '/home';
         this.isAddBoardModalOpen = false;
       } catch (error) {
         console.error(error);
@@ -204,8 +186,8 @@ export default {
         await axios.delete("/boards/" + boardId)
             .then(response => {
               console.log(response.data)
-              window.location.href = '/home'
             })
+        this.$emit('boardChanged');
       } catch (error) {
         console.error(error);
       }
@@ -223,7 +205,4 @@ export default {
 .v-menu__content {
   z-index: 100; // You can adjust this value as per your needs
 }
-
-
-
 </style>

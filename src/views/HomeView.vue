@@ -20,6 +20,7 @@
 
 
 import SideBarComponent from "@/components/SideBarComponent.vue";
+// import AreaComponent from "@/components/AreaComponent.vue";
 import axios from '@/axios/axios-instance';
 import BoardView from "@/views/BoardView.vue";
 
@@ -29,6 +30,7 @@ export default {
   components: {
     BoardView,
     SideBarComponent,
+    // AreaComponent
   },
   props: {
     showDetailBoard: {}
@@ -39,6 +41,7 @@ export default {
       areas: [],
       board: [],
       backgroundColor: 'white',  // 초기값을 white로 설정
+      detailBoard:[],
     };
   },
   mounted() {
@@ -57,7 +60,6 @@ export default {
         case 'Green':
           color = 'rgba(0, 255, 0, 0.5)';
           break;
-          // ... 기타 색상들 ...
         default:
           color = 'rgba(255, 255, 255, 0.5)';  // default는 연한 흰색
       }
@@ -80,7 +82,6 @@ export default {
     async showBoardDetail(boardId) {
       // 보드의 데이터를 detailBoard에 설정합니다.
       try {
-
         await axios.get("/boards/" + boardId)
         .then(response => {
           this.board = response.data
