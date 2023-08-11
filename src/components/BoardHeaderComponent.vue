@@ -7,7 +7,7 @@
         scroll-target="#scrolling-techniques-7"
     >
 
-      보드 이름
+      {{ this.name }}
       <v-spacer></v-spacer>
 
 
@@ -15,12 +15,12 @@
           v-show="isValidUser"
           elevation="2"
 
+
       >edit
       </v-btn>
       <v-btn
           v-show="isValidUser"
           elevation="2"
-
       >share
       </v-btn>
 
@@ -35,8 +35,10 @@ import axios from "@/axios/axios-instance";
 import Cookies from 'js-cookie';
 
 export default {
+  props: ["name"],
   data() {
     return {
+
       isValidUser: false
     }
   },

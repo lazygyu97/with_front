@@ -53,7 +53,7 @@ export default {
         window.localStorage.removeItem("username");
         window.localStorage.removeItem("userImage");
         Cookies.remove("refreshToken");
-        window.location.href='/';
+        window.location.href='/home';
       } catch (error) {
         alert(error)
       }
