@@ -49,7 +49,7 @@ export default {
     },
     async checkValidUser() {
       try {
-        if(window.localStorage.getItem("username") !== null){
+        if (window.localStorage.getItem("username") !== null) {
           this.isValidUser = true;
         }
         await axios.get("users")
@@ -57,7 +57,7 @@ export default {
               this.isValidUser = true;
             })
       } catch (error) {
-        await this.$router.push('/');
+        console.log(error)
       }
     }
   },
