@@ -159,7 +159,7 @@ export default {
         this.isEditModalOpen = false;
         this.$emit('boardChanged', this.newBoard);
       } catch (error) {
-        alert(error);
+        alert(error.response.data);
       }
     },
     async deleteBoard() {
@@ -171,7 +171,7 @@ export default {
               window.location.href = '/home'
             })
       } catch (error) {
-        alert(error);
+        alert(error.response.data);
       }
     },
     async checkValidUser() {
@@ -206,7 +206,7 @@ export default {
         this.isShareModalOpen = false;
         console.log(this.sharedUsers)
       }catch (error) {
-        alert(error)
+        alert(error.response.data)
       }
       console.log(this.board.id);
       console.log(this.selectedUser);

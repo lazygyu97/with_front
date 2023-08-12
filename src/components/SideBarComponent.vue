@@ -291,7 +291,7 @@ export default {
         // window.location.href = '/home';
         this.isAddBoardModalOpen = false;
       } catch (error) {
-        alert(error);
+        alert(error.response.data);
       }
     },
     async deleteBoard(board) {
@@ -304,7 +304,7 @@ export default {
             })
         window.location.href = "/home"
       } catch (error) {
-        alert(error);
+        alert(error.response.data);
       }
     },
     openUpdateModal(board) {

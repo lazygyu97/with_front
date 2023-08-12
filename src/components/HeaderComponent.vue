@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import axios from "@/axios/axios-instance";
 import Cookies from "js-cookie";
 
 export default {
@@ -40,25 +39,17 @@ export default {
     this.checkValidUser();
   },
   methods: {
-    async logout() {
+    logout() {
       window.localStorage.removeItem("accessToken");
       window.localStorage.removeItem("username");
       window.localStorage.removeItem("userImage");
       Cookies.remove("refreshToken");
-      window.location.href = '/';
+      this.checkValidUser()
+      this.$router.push('/');
     },
     async checkValidUser() {
-      try {
-        if (window.localStorage.getItem("username") !== null) {
-          this.isValidUser = true;
-        }
-        await axios.get("users")
-            .then(response => {
-              this.isValidUser = true;
-            })
-      } catch (error) {
-        console.log(error)
-      }
+      this.isValidUser = window.localStorage.getItem("accessToken") !== null
+          && window.localStorage.getItem("accesToken") !== "undefined";
     }
   },
 }

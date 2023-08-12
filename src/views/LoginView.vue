@@ -41,9 +41,58 @@
                     large
                     block
                     dark
+                    class="mb-5"
                 >
                   Sign Up
                 </v-btn>
+                <!--                소셜로그인-->
+                <!-- Social Login Buttons -->
+                <v-layout justify-center row wrap>
+                  <!-- Google Login Button -->
+                  <v-flex xs4 class="pa-1">
+                    <v-btn
+                        @click="googleLogin"
+                        color="red"
+                        depressed
+                        large
+                        block
+                        dark
+                        rounded
+                    >
+                      Google
+                    </v-btn>
+                  </v-flex>
+
+                  <!-- Naver Login Button -->
+                  <v-flex xs4 class="pa-1">
+                    <v-btn
+                        @click="naverLogin"
+                        color="green"
+                        depressed
+                        large
+                        block
+                        dark
+                        rounded
+                    >
+                      Naver
+                    </v-btn>
+                  </v-flex>
+
+                  <!-- Kakao Login Button -->
+                  <v-flex xs4 class="pa-1">
+                    <v-btn
+                        @click="kakaoLogin"
+                        color="yellow darken-2"
+                        depressed
+                        large
+                        block
+                        dark
+                        rounded
+                    >
+                      Kakao
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
               </div>
             </v-card>
           </v-flex>
@@ -82,7 +131,8 @@ export default {
         window.localStorage.removeItem("userImage");
         Cookies.remove("refreshToken");
       } catch (error) {
-        alert(error)
+        console.log(error)
+        alert(error.response.data)
       }
     }
     ,
@@ -117,24 +167,23 @@ export default {
                     window.location.href = '/home'
                   }
                 }
-            ).catch(error => {
-              console.log(error)
-              window.location.href="/"
-            })
-        // const accessToken = response.headers.get("Authorization")
-        // const refreshToken = response.headers.get("RefreshToken");
-        // if (accessToken !== null && refreshToken !== null) {
-        //   window.localStorage.setItem('accessToken', accessToken)
-        //   Cookies.set("refreshToken", refreshToken)
-        // }
-        console.log(window.localStorage.getItem('accessToken'))
-        console.log(Cookies.get("refreshToken"))
-        // console.log(response.data);
+            )
       } catch (error) {
         alert(error.response.data)
         console.log(error.response.data);
       }
-    }
+    },
+    googleLogin() {
+      window.location.href=`${process.env.VUE_APP_SERVER_URL}/oauth2/authorization/google`
+    },
+
+    naverLogin() {
+      window.location.href=`${process.env.VUE_APP_SERVER_URL}/oauth2/authorization/naver`
+    },
+
+    kakaoLogin() {
+      window.location.href=`${process.env.VUE_APP_SERVER_URL}/oauth2/authorization/kakao`
+    },
   }
 }
 

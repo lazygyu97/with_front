@@ -12,6 +12,11 @@ const routes = [
     component: () => import('../views/LoginView.vue')
   },
   {
+    path: '/oauth2',
+    name: 'oauth2',
+    component: () => import('../views/OAuth2.vue')
+  },
+  {
     path: '/signup',
     name: 'signup',
     component: () => import('../views/SignupView.vue')
@@ -44,8 +49,9 @@ router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // 토큰 유효성 검사 로직 구현
     try {
-      await axios.get("users")
+      await axios.get("/users")
           .then(response => {
+            console.log(response)
             window.localStorage.setItem('username', response.data.username);
             window.localStorage.setItem('userImage', response.data.image);
             next();
