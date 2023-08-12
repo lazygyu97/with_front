@@ -8,11 +8,11 @@
     >
       <template  v-slot:prepend>
         <v-list-item two-line>
-          <v-list-item-avatar>
+          <v-list-item-avatar @click="openUserImageModal">
             <img :src="userImage" alt="profile">
           </v-list-item-avatar>
 
-          <v-list-item-content>
+          <v-list-item-content @click="openUserImageModal">
             <v-list-item-title>{{username}}</v-list-item-title>
             <v-list-item-subtitle>Logged In</v-list-item-subtitle>
           </v-list-item-content>
@@ -137,6 +137,22 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="isUserImageModalOpen" max-width="600px">
+      <v-card>
+        <v-card-title>Update Profile Image</v-card-title>
+        <v-card-text>
+          <!-- 현재 이미지 표시 -->
+          <div v-if="previewImage || userImage">
+            <img :src="previewImage || userImage" alt="Profile Image Preview" style="max-width: 100%; margin-bottom: 20px;">
+          </div>
+          <input type="file" @change="onFileChange"> <!-- 이미지 파일 선택을 위한 input -->
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="closeUserImageModal">Cancel</v-btn>
+          <v-btn color="primary" @click="updateUserImage">Update</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 
 </template>
@@ -169,6 +185,9 @@ export default {
       ],
       userImage: '',
       username: '',
+      isUserImageModalOpen: false,
+      selectedImage: null,  // 사용자가 선택한 이미지 파일
+      previewImage:null,
       isShowBoards: false,
       isShowWithBoards: false,
       newBoard: {
@@ -187,6 +206,44 @@ export default {
   }
   ,
   methods: {
+    openUserImageModal() {
+      this.isUserImageModalOpen = true;
+    },
+
+    closeUserImageModal() {
+      this.isUserImageModalOpen = false;
+    },
+
+    onFileChange(event) {
+      this.selectedImage = event.target.files[0];
+      if (this.selectedImage) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.previewImage = e.target.result; // Data URL을 previewImage에 저장
+        }
+        reader.readAsDataURL(this.selectedImage);
+      }
+    },
+
+    async updateUserImage() {
+      console.log(this.selectedImage);
+      if (this.selectedImage) {
+        let formData = new FormData();
+        formData.append('image', this.selectedImage); // 'image'는 서버에서 기대하는 키 이름입니다. 필요에 따라 변경 가능합니다.
+        try {
+          // Content-Type: multipart/form-data 헤더와 함께 이미지 데이터 전송
+          await axios.put("/users/profile", formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          window.location.href = "/home";
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      this.closeUserImageModal();
+    },
     async showBoards() {
       this.isShowBoards = !this.isShowBoards;
       console.log(this.isShowBoards)

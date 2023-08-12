@@ -178,7 +178,6 @@ export default {
       try {
         await axios.get("users")
             .then(response => {
-              console.log(response.data.username)
               this.isValidUser = true;
             })
       } catch (error) {

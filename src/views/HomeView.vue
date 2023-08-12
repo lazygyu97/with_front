@@ -74,7 +74,6 @@ export default {
       try {
         await axios.get('/boards')
         .then(response => {
-          console.log(response.data.boards);
           this.boards = response.data.boards;
         }); // API 요청 예시
       } catch (error) {
@@ -85,7 +84,6 @@ export default {
       try {
         await axios.get('/boards/collaborators')
             .then(response => {
-              console.log(response.data.boards);
               this.withBoards = response.data.boards;
             }); // API 요청 예시
       } catch (error) {
