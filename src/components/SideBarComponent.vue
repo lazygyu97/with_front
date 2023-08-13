@@ -64,10 +64,10 @@
                     </v-btn>
                   </template>
 
-                  <v-list-item @click="openUpdateModal(board)">
+                  <v-list-item style="background-color: #ffffff" @click="openUpdateModal(board)">
                     <v-list-item-title>Update</v-list-item-title>
                   </v-list-item>
-                  <v-list-item @click="deleteBoard(board)">
+                  <v-list-item style="background-color: #ffffff" @click="deleteBoard(board)">
                     <v-list-item-title>Delete</v-list-item-title>
                   </v-list-item>
                 </v-menu>
