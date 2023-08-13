@@ -13,7 +13,7 @@
       <v-btn
           v-show="isValidUser"
           elevation="2"
-          @click="openEditModal"
+          @click="openEditModal">
       </v-btn>
       <v-btn
           v-show="isValidUser"

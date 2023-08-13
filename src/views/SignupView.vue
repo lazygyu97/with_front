@@ -151,7 +151,7 @@ export default {
       const data = {
         email: this.user_email
       };
-      axios.post("/users/login/mail", data)
+      axios.post("/users/signup/mail", data)
       .then(response => {
         console.log(response);
         this.email_code = response.data
@@ -171,7 +171,7 @@ export default {
       if (this.email_code == this.email_code_user) {
         axios({
           method: 'get',
-          url: '/users/login/mail',
+          url: '/users/signup/mail',
           params: {
             email: this.user_email,
             code: this.email_code_user,
