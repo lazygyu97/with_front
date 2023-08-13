@@ -1,73 +1,98 @@
 <template>
-  <v-app >
+  <v-app>
     <v-app-bar app style="margin-top: 64px">
       <BoardHeaderComponent :board="board" :isAuthor="isAuthor" @boardChanged="handleBoardChange"/>
     </v-app-bar>
 
-    <v-main style="padding: 0px">
-      <v-row style="margin-left: 20px">
-        <v-card
-            style="margin-top: 30px;margin-left: 10px;margin-right: 5px"
-            width="256px"
-            tile
-            v-for="(area, index) in this.board.areas"
-            :key="area"
-        >
-          <v-navigation-drawer permanent>
-            <v-system-bar>
-              <v-flex shrink>
-                <v-menu offset-y>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn icon v-bind="attrs" v-on="on">
-                      <v-icon>mdi-dots-horizontal</v-icon>
-                    </v-btn>
-                  </template>
+    <div v-if="this.board==''" style="width: 100%;height: 100%">
+      <div style="width: 100%;height: 100%;background-color: #2d3237">
+        <div style="color: #d7d4d4">
+          <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+          <h1 style="font-size: 45px">안녕하세요, 칸반보드 서비스 "With" 입니다.</h1>
+          <br>
+          <h3>사이드바의 MyBoard 의 "+" 버튼을 클릭해 작업관리를 시작해보세요</h3>
+          <h3>각 보드에는 협업자들을 추가해 협업 작업 관리 또한 가능합니다.</h3>
+          <br>
+          <h3>사이드바의 WithBoard 에서는 여러분이 협업자로 포함되어있는 보드를 확인 할 수 있습니다.</h3>
 
-                  <v-list-item @click="openUpdateAreaModal(area, index)">
-                    <v-list-item-title>Update</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item @click="deleteArea(area, index)">
-                    <v-list-item-title>Delete</v-list-item-title>
-                  </v-list-item>
-                </v-menu>
-              </v-flex></v-system-bar>
-            <v-list>
-              <v-list-item link>
-                <v-list-item-content>
-                  <v-list-item-title class="text-h6">
-                    {{ area.name }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle>설명</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-            <v-divider></v-divider>
-            <v-list
-                nav
-                dense>
-              <v-list-item
-                  v-for="card in area.cards"
-                  :key="card"
-              >
-                <v-list-item-content
-                    @click="openDetailCardModal(card.title,card.content,card.cardUsers,card.comments,card.username,card.image,card.id)">
-                  <v-list-item-title v-text="card.title"></v-list-item-title>
-                </v-list-item-content>
+        </div>
 
-              </v-list-item>
-            </v-list>
-            <v-btn @click="openAddCardModal(area.id)">+Add Cards</v-btn>
-          </v-navigation-drawer>
-        </v-card>
+      </div>
+
+    </div>
+
+    <div v-else>
+
+      <v-main style="padding: 0px">
+        <v-row style="margin-left: 20px">
 
 
-        <v-btn style="margin-left: 75px;margin-top: 100px" @click="openAddAreaModal()">
-          + Add Area
-        </v-btn>
-        <v-btn @click="check"></v-btn>
-      </v-row>
-    </v-main>
+          <v-card
+              style="border-radius:10px; margin-top: 30px;margin-left: 10px;margin-right: 5px"
+              width="256px"
+              tile
+              v-for="(area, index) in this.board.areas"
+              :key="area.id"
+          >
+            <v-navigation-drawer permanent>
+              <v-system-bar>
+                <v-flex shrink>
+                  <v-menu offset-y>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn icon v-bind="attrs" v-on="on">
+                        <v-icon>mdi-dots-horizontal</v-icon>
+                      </v-btn>
+                    </template>
 
+                    <v-list-item style="background-color: #ffffff"
+                                 @click="openUpdateAreaModal(area, index)">
+                      <v-list-item-title>Update</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item style="background-color: #ffffff" @click="deleteArea(area, index)">
+                      <v-list-item-title>Delete</v-list-item-title>
+                    </v-list-item>
+                  </v-menu>
+                </v-flex>
+              </v-system-bar>
+              <v-list>
+                <v-list-item link>
+                  <v-list-item-content>
+                    <v-list-item-title class="text-h6">
+                      {{ area.name }}
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+              <v-divider></v-divider>
+              <v-list>
+                <v-list-item
+                    v-for="card in area.cards"
+                    :key="card.id"
+                >
+                  <v-list-item-content
+                      @click="openDetailCardModal(area.name,card.title,card.content,card.cardUsers,card.comments,card.checkLists,card.username,card.image,card.id)">
+                    <v-list-item-title v-text="card.title"></v-list-item-title>
+                    <v-divider></v-divider>
+
+                  </v-list-item-content>
+
+                </v-list-item>
+              </v-list>
+              <v-btn elevation="0"
+                     style="margin-bottom:10px;border: none;background-color: transparent"
+                     @click="openAddCardModal(area.id)">+ Add Cards
+              </v-btn>
+            </v-navigation-drawer>
+          </v-card>
+
+
+          <v-btn style="margin-left: 75px;margin-top: 100px" @click="openAddAreaModal()">
+            + Add Area
+          </v-btn>
+          <v-btn @click="check"></v-btn>
+        </v-row>
+      </v-main>
+    </div>
     <!-- Area 수정, 추가 모달-->
     <v-dialog v-model="isAddAreaModalOpen" max-width="600px">
       <v-card>
@@ -96,7 +121,7 @@
     </v-dialog>
     <!-- Area 수정, 추가 모달-->
 
-    <!-- Card 수정, 추가 모달-->
+    <!-- Card 추가 모달-->
     <v-dialog v-model="isAddCardModalOpen" max-width="600px">
       <v-card>
         <v-card-title>
@@ -114,10 +139,30 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <!-- Card 수정, 추가 모달-->
+    <!-- Card 추가 모달-->
+
+    <!-- Card 추가 모달-->
+<!--    <v-dialog v-model="isUpdateCardModalOpen" max-width="600px">-->
+<!--      <v-card>-->
+<!--        <v-card-title>-->
+<!--          {{ newArea.id ? 'Update Area' : 'Add New Card' }}-->
+<!--        </v-card-title>-->
+<!--        <v-card-text>-->
+<!--          <v-text-field v-model="newCard.title" label="Title"></v-text-field>-->
+<!--          <v-text-field v-model="newCard.content" label="Content"></v-text-field>-->
+<!--        </v-card-text>-->
+<!--        <v-card-actions>-->
+<!--          <v-btn @click="closeAddCardModal">Cancel</v-btn>-->
+<!--          <v-btn color="primary" @click="addCard">-->
+<!--            {{ newArea.id ? 'Update' : 'Add' }}-->
+<!--          </v-btn>-->
+<!--        </v-card-actions>-->
+<!--      </v-card>-->
+<!--    </v-dialog>-->
+    <!-- Card 추가 모달-->
 
     <!-- Card 디테일 모달-->
-    <v-dialog v-model="isDetailCardModalOpen" max-width="600px">
+    <v-dialog @click:outside="closeDialog()" v-model="isDetailCardModalOpen" max-width="600px">
       <v-card
           class="mx-auto"
           max-width="600px"
@@ -132,19 +177,18 @@
                 </v-btn>
               </template>
 
-              <v-list-item @click="openUpdateAreaModal(board)">
+              <v-list-item style="background-color: #ffffff" @click="openUpdateCardModal()">
                 <v-list-item-title>Update</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="deleteArea(board.id)">
+              <v-list-item style="background-color: #ffffff" @click="deleteCard()">
                 <v-list-item-title>Delete</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="addImage()">
+              <v-list-item style="background-color: #ffffff" @click="addImage()">
                 <v-list-item-title>Add Image</v-list-item-title>
               </v-list-item>
             </v-menu>
           </v-flex>
         </v-system-bar>
-
 
         <div v-if="modalCard.image==null">
         </div>
@@ -152,14 +196,18 @@
           <v-img
               :src=this.modalCard.image
               max-width="600"
-              height="200px"
+              max-height="200"
+              object-fit: scale-down
           ></v-img>
         </div>
 
-        <v-card-title>
-          {{ modalCard.title }}
-          <v-spacer></v-spacer>
-          <v-btn @click="closeDetailCardModal" x-small>x</v-btn>
+        <v-card-title style="font-size:30px;margin-bottom: 20px">
+          <v-spacer/>
+
+            {{ modalCard.title }}&nbsp;<span style="font-size: 20px"> in {{ modalCard.area }}</span>
+
+          <v-spacer/>
+
         </v-card-title>
 
         <v-card-subtitle>
@@ -170,7 +218,7 @@
 
         <v-card-actions>
           <v-btn
-              color="orange lighten-2"
+              color="black"
               text
           >
             collaborators
@@ -189,7 +237,7 @@
             <v-btn>+share</v-btn>
             <v-list-item
                 v-for="cardUsers in modalCard.cardUsers"
-                :key="cardUsers"
+                :key="cardUsers.id"
             >
               <v-list-item-content>
                 <v-list-item-title v-text="cardUsers.title"></v-list-item-title>
@@ -203,7 +251,7 @@
 
         <v-card-actions>
           <v-btn
-              color="orange lighten-2"
+              color="black"
               text
           >
             comments
@@ -231,23 +279,100 @@
                         @click:append-outer="sendMessage"
                         clearable
                         label="Message"/>
+                    <div v-if="this.modalCard.comments.length===0">
+                      No comments
+                    </div>
+                    <div v-else>
+                      <v-list-item
+                          v-for="(comments,i) in this.modalCard.comments"
+                          :key="comments.id">
+                        <v-list-item-avatar>
+                          <v-img max-height="40" max-width="40" :src="comments.image"/>
+                        </v-list-item-avatar>
+                        <v-list-item-title v-text="comments.content"></v-list-item-title>
+                        <v-spacer/>
+                        <v-flex shrink>
+                          <v-menu offset-y>
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn icon v-bind="attrs" v-on="on">
+                                <v-icon>mdi-dots-horizontal</v-icon>
+                              </v-btn>
+                            </template>
 
-                    <v-list-item
-                        v-for="comments in modalCard.comments"
-                        :key="comments"
-                    >
-                      <v-list-item-content>
-                        <v-list-item-title v-text="comments"></v-list-item-title>
-                        <v-divider></v-divider>
-                      </v-list-item-content>
+                            <v-list-item style="background-color: #ffffff"
+                                         @click="openUpdateAreaModal(board)">
+                              <v-list-item-title>Update</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item style="background-color: #ffffff"
+                                         @click="deleteComment(comments.id,i)">
+                              <v-list-item-title>Delete</v-list-item-title>
+                            </v-list-item>
+                          </v-menu>
+                        </v-flex>
+                      </v-list-item>
+                      <v-divider></v-divider>
+                    </div>
 
-                    </v-list-item>
                   </v-col>
                 </v-row>
               </v-container>
             </v-form>
             <v-divider></v-divider>
 
+          </div>
+        </v-expand-transition>
+
+        <v-divider/>
+
+        <v-card-actions>
+          <v-btn
+              color="black"
+              text
+          >
+            CheckList
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+              icon
+              @click="show3 = !show3"
+          >
+            <v-icon>{{ show3 ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+          </v-btn>
+        </v-card-actions>
+
+        <v-expand-transition>
+          <div v-show="show3" style="display: flex; justify-content: center; align-items: center;">
+            <v-col cols="8">
+              <v-text-field
+                  v-model="checkForm"
+                  filled
+                  clear-icon="mdi-close-circle"
+                  append-outer-icon="mdi-send"
+                  @click:append-outer="sendCheckList"
+                  clearable
+                  label="checklist"/>
+              <div v-if="this.modalCard.checkLists.length===0">
+                No checkLists
+              </div>
+              <div v-else>
+                <v-list-item
+                    v-for="(checklists,i) in this.modalCard.checkLists"
+                    :key="checklists.id"
+
+                >
+                  <v-checkbox
+                      @click="isChecked(checklists.id)"
+                      :label=checklists.contents
+                      v-model="checklists._checked"
+                  ></v-checkbox>
+                  <v-spacer/>
+                  <v-btn @click="deleteChecklist(checklists.id,i)" elevation="0"
+                         style="border: none;background-color: transparent">X
+                  </v-btn>
+                </v-list-item>
+                <v-divider></v-divider>
+              </div>
+            </v-col>
           </div>
         </v-expand-transition>
       </v-card>
@@ -261,7 +386,8 @@
         <v-card-text>
           <!-- 현재 이미지 표시 -->
           <div v-if="this.modalCard.image || this.modalCard.previewImage">
-            <img :src="this.modalCard.previewImage || this.modalCard.image " alt="Profile Image Preview" style="max-width: 100%; margin-bottom: 20px;">
+            <img :src="this.modalCard.previewImage || this.modalCard.image "
+                 alt="Profile Image Preview" style="max-width: 100%; margin-bottom: 20px;">
           </div>
           <input type="file" @change="onFileChange"> <!-- 이미지 파일 선택을 위한 input -->
         </v-card-text>
@@ -287,9 +413,10 @@ import axios from "@/axios/axios-instance";
 
 export default {
   props: {
+    type:Array,
     board: {
       type: Object,
-      required: true,
+      required: true
     },
   },
   name: "BoardView",
@@ -305,11 +432,13 @@ export default {
       area_size: 0,
       show1: false,
       show2: false,
-      message:'',
+      show3: false,
+      message: '',
+      checkForm: '',
       isAddAreaModalOpen: false,
       isAddCardModalOpen: false,
       isDetailCardModalOpen: false,
-      isCardImageModalOpen:false,
+      isCardImageModalOpen: false,
       selectedItem: '',
       newArea: {
         boardId: '',
@@ -322,22 +451,46 @@ export default {
         title: ''
       },
       modalCard: {
-        id:0,
+        id: 0,
+        area: '',
         title: '',
         content: '',
         username: '',
-        image:null,
-        changeImage:null,
-        previewImage:null,
+        image: null,
+        changeImage: null,
+        previewImage: null,
         comments: [],
+        checkLists: [],
         cardUsers: []
       }
 
     };
   },
   methods: {
+    openDetailCardModal(area,title, content, cardUsers, comments, checkLists, username, image, id) {
+      this.modalCard.area = area;
+      this.modalCard.id = id;
+      this.modalCard.title = title;
+      this.modalCard.content = content;
+      this.modalCard.username = username;
+      this.modalCard.image = image;
+      if (comments.length != 0) {
+        for (var i in comments) {
+          this.modalCard.comments.push(comments[i]);
+        }
+      }
+      if (cardUsers.length != 0) {
+        this.modalCard.cardUsers.push(cardUsers);
+      }
+      if (checkLists.length != 0) {
+        for (var i in checkLists) {
+          this.modalCard.checkLists.push(checkLists[i]);
+        }
+      }
+      this.isDetailCardModalOpen = true;
+    },
+
     check() {
-      alert(this.board.id);
       console.log(this.board)
     },
     onFileChange(event) {
@@ -356,30 +509,31 @@ export default {
         formData.append('image', this.modalCard.changeImage);
         try {
           // Content-Type: multipart/form-data 헤더와 함께 이미지 데이터 전송
-          await axios.put("/cards/"+this.modalCard.id+"/imageUpload", formData, {
+          await axios.put("/cards/" + this.modalCard.id + "/imageUpload", formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
           });
-          this.modalCard.image=this.modalCard.previewImage;
-          this.isCardImageModalOpen=false;
-          this.modalCard.previewImage=null;
-          this.modalCard.changeImage=null;
-
+          this.modalCard.image = this.modalCard.previewImage;
+          this.isCardImageModalOpen = false;
+          this.modalCard.previewImage = null;
+          this.modalCard.changeImage = null;
+          await this.reload();
 
         } catch (error) {
           console.log(error);
         }
       }
     },
-    closeCardImageModal(){
-      this.isCardImageModalOpen=false;
-      this.modalCard.previewImage=null;
-      this.modalCard.changeImage=null;
+    closeCardImageModal() {
+      this.isCardImageModalOpen = false;
+      this.modalCard.previewImage = null;
+      this.modalCard.changeImage = null;
     },
-    addImage(){
-      this.isCardImageModalOpen=true;
+    addImage() {
+      this.isCardImageModalOpen = true;
     },
+
     openAddAreaModal() {
       this.isAddAreaModalOpen = true;
     },
@@ -391,6 +545,7 @@ export default {
         position: 0
       }
     },
+
     openUpdateAreaModal(area) {
       this.isAddAreaModalOpen = true;
       this.newArea = {...area};  // assuming newBoard is an object
@@ -404,60 +559,11 @@ export default {
       }
     },
     openAddCardModal(id) {
-      alert(id)
       this.newCard.areaId = id;
       this.isAddCardModalOpen = true;
     },
     closeAddCardModal() {
       this.isAddCardModalOpen = false;
-    },
-
-    openDetailCardModal(title, content, cardUsers, comments, username,image,id) {
-
-
-      this.modalCard.title = '';
-      this.modalCard.content = '';
-      this.modalCard.username = '';
-      this.modalCard.id = '';
-      this.modalCard.image = null;
-      this.modalCard.previewImage = null;
-      this.modalCard.changeImage = null;
-      this.modalCard.comments=[];
-      this.modalCard.cardUsers=[];
-
-      this.show1=false;
-      this.show2=false;
-      this.message='';
-
-      this.modalCard.id = id;
-      this.modalCard.title = title;
-      this.modalCard.content = content;
-      this.modalCard.username = username;
-      this.modalCard.image = image;
-      this.modalCard.comments.push(comments);
-      this.modalCard.cardUsers.push(cardUsers);
-
-      this.isDetailCardModalOpen = true;
-    },
-    closeDetailCardModal() {
-      this.modalCard.id = '';
-      this.modalCard.title = '';
-      this.modalCard.content = '';
-      this.modalCard.username = '';
-      this.modalCard.image = null;
-      this.modalCard.previewImage = null;
-      this.modalCard.changeImage = null;
-      this.modalCard.comments=[];
-      this.modalCard.cardUsers=[];
-      this.show1=false;
-      this.show2=false;
-      this.message='';
-
-      this.isDetailCardModalOpen = false;
-    },
-    sendMessage(){
-      alert(this.message)
-      this.modalCard.comments.push(this.message);
     },
 
     async addArea() {
@@ -467,7 +573,7 @@ export default {
         position: 0
       }
       try {
-        if (this.newArea.id){
+        if (this.newArea.id) {
           await axios.put("/areas/names/" + this.newArea.id, data);
           alert("Area 변경 성공");
         } else {
@@ -482,6 +588,7 @@ export default {
         await this.reload();
       }
     },
+
     async addCard() {
       this.isAddCardModalOpen = false;
       try {
@@ -499,6 +606,119 @@ export default {
         this.newCard.content = ''
         await this.reload();
       }
+    },
+    async deleteCard() {
+      await axios.delete("/cards/" + this.modalCard.id)
+      .then(response => {
+        console.log(response);
+        alert('카드 삭제 성공')
+        this.closeDialog()
+        this.reload();
+      })
+      .catch(error => {
+        console.log(error);
+        alert(error.response.data)
+      })
+    },
+
+    async sendMessage() {
+
+      const data = {
+        cardId: this.modalCard.id,
+        content: this.message
+      };
+
+      await axios.post("/comments", data)
+      .then(response => {
+        console.log(response);
+
+        alert('댓글 달기 성공')
+        this.modalCard.comments.push(response.data);
+        this.reload();
+
+      })
+      .catch(error => {
+        console.log(error);
+        alert(error.response.data)
+      })
+
+    },
+    async deleteComment(id, index) {
+      await axios.delete("/comments/" + id)
+      .then(response => {
+        console.log(response);
+        alert('댓글 삭제 성공')
+        this.modalCard.comments.splice(index, 1)
+        this.reload();
+      })
+      .catch(error => {
+        console.log(error);
+        alert(error.response.data)
+      })
+    },
+
+    async sendCheckList() {
+      const data = {
+        cardId: this.modalCard.id,
+        content: this.checkForm
+      };
+
+      await axios.post("/checklists", data)
+      .then(response => {
+        console.log(response);
+        alert('체크리스트 추가 성공')
+        this.modalCard.checkLists.push(response.data);
+        this.reload();
+
+      })
+      .catch(error => {
+        console.log(error);
+        alert(error.response.data)
+      })
+    },
+    async isChecked(id) {
+      await axios.put("/checklists/" + id)
+      .then(response => {
+        alert('체크 성공')
+        this.reload();
+      })
+      .catch(error => {
+        console.log(error);
+        alert(error.response.data)
+      })
+    },
+    async deleteChecklist(id, index) {
+      await axios.delete("/checklists/" + id)
+      .then(response => {
+        console.log(response);
+        alert('체크리스트 삭제 성공')
+        this.modalCard.checkLists.splice(index, 1)
+        this.reload();
+      })
+      .catch(error => {
+        console.log(error);
+        alert(error.response.data)
+      })
+    },
+    async closeDialog() {
+      this.modalCard.area = '';
+      this.modalCard.title = '';
+      this.modalCard.content = '';
+      this.modalCard.username = '';
+      this.modalCard.id = '';
+      this.modalCard.image = null;
+      this.modalCard.previewImage = null;
+      this.modalCard.changeImage = null;
+      this.modalCard.comments.length = 0;
+      this.modalCard.cardUsers.length = 0;
+      this.modalCard.checkLists.length = 0;
+      this.show1 = false;
+      this.show2 = false;
+      this.show3 = false;
+      this.message = '';
+      this.checkForm = '';
+      this.isDetailCardModalOpen = false;
+      await this.reload();
     },
     async reload() {
       try {
