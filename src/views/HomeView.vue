@@ -2,7 +2,8 @@
 
   <v-app>
     <v-navigation-drawer style="overflow: hidden !important;" app>
-      <SideBarComponent :boards="boards" :withBoards="withBoards" @showDetailBoard="showBoardDetail" @boardChanged="handleBoardChange"/>
+      <SideBarComponent :boards="boards" :withBoards="withBoards" @showDetailBoard="showBoardDetail"
+                        @boardChanged="handleBoardChange"/>
     </v-navigation-drawer>
     <v-content style="margin: 0;padding: 0;">
       <BoardView
@@ -42,7 +43,7 @@ export default {
       areas: [],
       board: [],
       backgroundColor: 'white',  // 초기값을 white로 설정
-      detailBoard:[],
+      detailBoard: [],
     };
   },
   mounted() {
@@ -54,13 +55,19 @@ export default {
       let color;
       switch (this.backgroundColor) {
         case 'Red':
-          color = 'rgba(255, 0, 0, 0.5)';
+          color = 'rgb(251,120,120)';
           break;
         case 'Blue':
-          color = 'rgba(85,85,250,0.5)';
+          color = 'rgb(63,100,244)';
           break;
         case 'Green':
-          color = 'rgba(0, 255, 0, 0.5)';
+          color = 'rgba(146,243,146,0.5)';
+          break;
+        case 'Purple':
+          color = 'rgba(207,146,243,0.5)';
+          break;
+          case 'Black':
+          color = 'rgba(14,14,14,0.47)';
           break;
         default:
           color = 'rgba(255, 255, 255, 0.5)';  // default는 연한 흰색
@@ -84,9 +91,9 @@ export default {
     async fetchWithBoards() {
       try {
         await axios.get('/boards/collaborators')
-            .then(response => {
-              this.withBoards = response.data.boards;
-            }); // API 요청 예시
+        .then(response => {
+          this.withBoards = response.data.boards;
+        }); // API 요청 예시
       } catch (error) {
         console.error(error);
       }
