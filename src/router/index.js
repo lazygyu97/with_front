@@ -21,11 +21,6 @@ const routes = [
     name: 'home',
     component: HomeView,
     meta: {requiresAuth: true},
-    children: [
-
-      { path: '/home/board',   component: () => import( '../views/BoardView.vue') }
-
-    ]
   },
   {
     path: '/board',
@@ -45,15 +40,15 @@ router.beforeEach(async (to, from, next) => {
     // 토큰 유효성 검사 로직 구현
     try {
       await axios.get("users")
-          .then(response => {
-            window.localStorage.setItem('username', response.data.username);
-            window.localStorage.setItem('userImage', response.data.userImage);
-            next();
-          })
-    } catch (error){
+      .then(response => {
+        window.localStorage.setItem('username', response.data.username);
+        window.localStorage.setItem('userImage', response.data.userImage);
+        next();
+      })
+    } catch (error) {
       console.log(error);
       alert("로그인이 필요합니다.")
-      window.location.href='/';
+      window.location.href = '/';
     }
   } else {
     next();
