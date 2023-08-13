@@ -275,9 +275,9 @@ export default {
           info: this.newBoard.info
         };
         if (this.newBoard.id) {
-          await axios.put("/boards/" + this.newBoard.id + "/names", boardData);
-          await axios.put("/boards/" + this.newBoard.id + "/colors", boardData);
-          await axios.put("/boards/" + this.newBoard.id + "/infos", boardData);
+          await axios.put("/boards/names/" + this.newBoard.id, boardData);
+          await axios.put("/boards/colors/" + this.newBoard.id, boardData);
+          await axios.put("/boards/infos/" + this.newBoard.id, boardData);
         } else {
           await axios.post("/boards", this.newBoard);
         }
