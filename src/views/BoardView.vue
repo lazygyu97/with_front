@@ -10,7 +10,7 @@
             style="margin-top: 30px;margin-left: 10px;margin-right: 5px"
             width="256px"
             tile
-            v-for="area in this.board.areas"
+            v-for="(area, index) in this.board.areas"
             :key="area"
         >
           <v-navigation-drawer permanent>
@@ -23,10 +23,10 @@
                     </v-btn>
                   </template>
 
-                  <v-list-item @click="openUpdateAreaModal(board)">
+                  <v-list-item @click="openUpdateAreaModal(area, index)">
                     <v-list-item-title>Update</v-list-item-title>
                   </v-list-item>
-                  <v-list-item @click="deleteArea(board.id)">
+                  <v-list-item @click="deleteArea(area, index)">
                     <v-list-item-title>Delete</v-list-item-title>
                   </v-list-item>
                 </v-menu>
@@ -145,8 +145,8 @@
           </v-flex>
         </v-system-bar>
 
-        <div v-if="modalCard.image==null">
 
+        <div v-if="modalCard.image==null">
         </div>
         <div v-else>
           <v-img
@@ -155,7 +155,6 @@
               height="200px"
           ></v-img>
         </div>
-
 
         <v-card-title>
           {{ modalCard.title }}
@@ -176,9 +175,7 @@
           >
             collaborators
           </v-btn>
-
           <v-spacer></v-spacer>
-
           <v-btn
               icon
               @click="show1 = !show1"
@@ -211,9 +208,7 @@
           >
             comments
           </v-btn>
-
           <v-spacer></v-spacer>
-
           <v-btn
               icon
               @click="show2 = !show2"
@@ -317,7 +312,7 @@ export default {
       isCardImageModalOpen:false,
       selectedItem: '',
       newArea: {
-        boardId: this.board.id,
+        boardId: '',
         name: '',
         position: 0
       },
@@ -385,6 +380,23 @@ export default {
     },
     closeAddAreaModal() {
       this.isAddAreaModalOpen = false;
+      this.newArea = {
+        boardId: '',
+        name: '',
+        position: 0
+      }
+    },
+    openUpdateAreaModal(area) {
+      this.isAddAreaModalOpen = true;
+      this.newArea = {...area};  // assuming newBoard is an object
+    },
+    async deleteArea(area, index) {
+      try {
+        await axios.delete("/areas/" + area.id);
+        this.board.areas.splice(index, 1)
+      } catch (error) {
+        alert(error)
+      }
     },
     openAddCardModal(id) {
       alert(id)
@@ -394,7 +406,9 @@ export default {
     closeAddCardModal() {
       this.isAddCardModalOpen = false;
     },
+
     openDetailCardModal(title, content, cardUsers, comments, username,image,id) {
+
 
       this.modalCard.title = '';
       this.modalCard.content = '';
@@ -438,18 +452,21 @@ export default {
     },
 
     async addArea() {
-
       const data = {
         boardId: this.board.id,
         name: this.newArea.name,
         position: 0
       }
-
       try {
-        data.position = this.area_size;
+        if (this.newArea.id){
+          await axios.put("/areas/names/" + this.newArea.id, data);
+          alert("Area 변경 성공");
+        } else {
+          data.position = this.area_size;
+          await axios.post("/areas", data);
+          alert("Area 추가 성공");
+        }
         this.isAddAreaModalOpen = false;
-        await axios.post("/areas", data);
-        alert("Area 추가 성공");
         await this.reload();
       } catch (error) {
         console.error(error);
@@ -457,7 +474,6 @@ export default {
       }
     },
     async addCard() {
-
       this.isAddCardModalOpen = false;
       try {
         await axios.post("/cards", this.newCard);
