@@ -75,6 +75,7 @@ export default {
         await axios.get('/boards')
         .then(response => {
           this.boards = response.data.boards;
+          console.log(this.boards)
         }); // API 요청 예시
       } catch (error) {
         console.error(error);

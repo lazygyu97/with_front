@@ -50,7 +50,7 @@
                   :key="card"
               >
                 <v-list-item-content
-                    @click="openDetailCardModal(card.title,card.content,card.cardUsers,card.comments,card.username,card.image)">
+                    @click="openDetailCardModal(card.id,card.title,card.content,card.cardUsers,card.comments,card.username,card.image)">
                   <v-list-item-title v-text="card.title"></v-list-item-title>
                 </v-list-item-content>
 
@@ -179,20 +179,43 @@
           </v-btn>
         </v-card-actions>
 
-        <v-expand-transition>
-          <div v-show="show1">
-            <v-btn>+share</v-btn>
-            <v-list-item
-                v-for="cardUsers in modalCard.cardUsers"
-                :key="cardUsers"
+        <template>
+          <div>
+            <!-- 검색창 -->
+            <v-autocomplete
+                v-if="show1"
+                v-model="selectedUser"
+                :items="board.collaborators"
+                label="Search for a user"
+                item-text="nickname"
+                :item-value="item => item"
+                clearable
             >
-              <v-list-item-content>
-                <v-list-item-title v-text="cardUsers.title"></v-list-item-title>
-              </v-list-item-content>
-              <v-divider></v-divider>
-            </v-list-item>
+              <template v-slot:item="{ item }">
+                <div class="user-item">
+                  <v-avatar class="user-avatar">
+                    <img :src="item.image" alt="user image">
+                  </v-avatar>
+                  {{ item.nickname }}
+                </div>
+              </template>
+            </v-autocomplete>
+            <!-- share 버튼 -->
+            <v-btn v-if="show1" @click="shareCard">share</v-btn>
+            <!-- 기존에 공유된 유저 목록 -->
+            <v-expand-transition>
+              <div v-if="modalCard.cardUsers && show1">
+                <h4>Already shared with:</h4>
+                <ul>
+                  <li v-for="user in modalCard.cardUsers" :key="user.id">
+                    {{ user.collaborator }}
+                    <v-btn small color="error" @click="removeCollaborator(user)">Remove</v-btn>
+                  </li>
+                </ul>
+              </div>
+            </v-expand-transition>
           </div>
-        </v-expand-transition>
+        </template>
 
         <v-divider/>
 
@@ -277,6 +300,8 @@ export default {
   },
   data() {
     return {
+      selectedUser: [],
+      sharedUsers: [],
       areaId: 0,
       area_size: 0,
       show1: false,
@@ -297,6 +322,7 @@ export default {
         title: ''
       },
       modalCard: {
+        id: '',
         title: '',
         content: '',
         username: '',
@@ -345,14 +371,15 @@ export default {
     closeAddCardModal() {
       this.isAddCardModalOpen = false;
     },
-    openDetailCardModal(title, content, cardUsers, comments, username, image) {
-
+    openDetailCardModal(id, title, content, cardUsers, comments, username, image) {
+      console.log(this.modalCard)
+      this.modalCard.id = id;
       this.modalCard.title = '';
       this.modalCard.content = '';
       this.modalCard.username = '';
       this.modalCard.image = '';
       this.modalCard.comments=[];
-      this.modalCard.cardUsers=[];
+      this.modalCard.cardUsers=cardUsers;
       this.show1=false;
       this.show2=false;
       this.message='';
@@ -362,9 +389,8 @@ export default {
       this.modalCard.username = username;
       this.modalCard.image = image;
       this.modalCard.comments.push(comments);
-      this.modalCard.cardUsers.push(cardUsers);
-
       this.isDetailCardModalOpen = true;
+      console.log(this.modalCard.cardUsers)
     },
     closeDetailCardModal() {
       this.modalCard.title = '';
@@ -377,6 +403,7 @@ export default {
       this.message='';
 
       this.isDetailCardModalOpen = false;
+      console.log(this.modalCard.cardUsers);
     },
     sendMessage(){
       alert(this.message)
@@ -437,9 +464,28 @@ export default {
     handleBoardChange(board) {
       // 여기서 boardId를 사용할 수 있습니다.
       this.$emit('boardChanged', board);
+    },
+    async shareCard(){
+      console.log(this.selectedUser);
+      console.log(this.modalCard)
+      try{
+        await axios.put("/cards/" + this.modalCard.id + "/collaborators", {userId : this.selectedUser.id})
+        this.modalCard.cardUsers.push({id:this.selectedUser.id, collaborator: this.selectedUser.nickname})
+        await this.reload();
+      } catch (error) {
+        alert(error)
+      }
+    },
+    async removeCollaborator(user){
+      try{
+        await axios.delete("/cards/" + this.modalCard.id + "/collaborators", {data:{userId : user.id}})
+        this.modalCard.cardUsers = this.modalCard.cardUsers.filter(u => u.id !== user.id);
+        await this.reload();
+      } catch (error) {
+        alert(error)
+      }
     }
   }
-
 }
 
 </script>
