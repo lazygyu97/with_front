@@ -50,7 +50,7 @@
                   :key="card"
               >
                 <v-list-item-content
-                    @click="openDetailCardModal(card.id,card.title,card.content,card.cardUsers,card.comments,card.username,card.image)">
+                    @click="openDetailCardModal(card.title,card.content,card.cardUsers,card.comments,card.username,card.image,card.id)">
                   <v-list-item-title v-text="card.title"></v-list-item-title>
                 </v-list-item-content>
 
@@ -123,6 +123,7 @@
           max-width="600px"
       >
         <v-system-bar>
+          <v-spacer/>
           <v-flex shrink>
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
@@ -137,15 +138,20 @@
               <v-list-item @click="deleteArea(board.id)">
                 <v-list-item-title>Delete</v-list-item-title>
               </v-list-item>
+              <v-list-item @click="addImage()">
+                <v-list-item-title>Add Image</v-list-item-title>
+              </v-list-item>
             </v-menu>
-          </v-flex></v-system-bar>
+          </v-flex>
+        </v-system-bar>
 
-        <div v-if="modalCard.image==''">
+
+        <div v-if="modalCard.image==null">
         </div>
         <div v-else>
           <v-img
-              src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-              max-width="400px"
+              :src=this.modalCard.image
+              max-width="600"
               height="200px"
           ></v-img>
         </div>
@@ -153,8 +159,7 @@
         <v-card-title>
           {{ modalCard.title }}
           <v-spacer></v-spacer>
-
-          <v-btn @click="closeDetailCardModal">x</v-btn>
+          <v-btn @click="closeDetailCardModal" x-small>x</v-btn>
         </v-card-title>
 
         <v-card-subtitle>
@@ -272,6 +277,25 @@
     </v-dialog>
     <!-- Card 디테일 모달-->
 
+    <!-- Card 이미지 수정/추가 모달-->
+    <v-dialog v-model="isCardImageModalOpen" max-width="600px">
+      <v-card>
+        <v-card-title>Update Card Image</v-card-title>
+        <v-card-text>
+          <!-- 현재 이미지 표시 -->
+          <div v-if="this.modalCard.image || this.modalCard.previewImage">
+            <img :src="this.modalCard.previewImage || this.modalCard.image " alt="Profile Image Preview" style="max-width: 100%; margin-bottom: 20px;">
+          </div>
+          <input type="file" @change="onFileChange"> <!-- 이미지 파일 선택을 위한 input -->
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="closeCardImageModal">Cancel</v-btn>
+          <v-btn color="primary" @click="updateCardImage">Update</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!-- Card 이미지 수정/추가 모달-->
+
   </v-app>
 </template>
 
@@ -310,6 +334,7 @@ export default {
       isAddAreaModalOpen: false,
       isAddCardModalOpen: false,
       isDetailCardModalOpen: false,
+      isCardImageModalOpen:false,
       selectedItem: '',
       newArea: {
         boardId: '',
@@ -322,11 +347,13 @@ export default {
         title: ''
       },
       modalCard: {
-        id: '',
+        id:0,
         title: '',
         content: '',
         username: '',
-        image:'',
+        image:null,
+        changeImage:null,
+        previewImage:null,
         comments: [],
         cardUsers: []
       }
@@ -335,11 +362,49 @@ export default {
   },
   methods: {
     check() {
-      alert("asdf");
       alert(this.board.id);
       console.log(this.board)
     },
+    onFileChange(event) {
+      this.modalCard.changeImage = event.target.files[0];
+      if (this.modalCard.changeImage) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.modalCard.previewImage = e.target.result; // Data URL을 previewImage에 저장
+        }
+        reader.readAsDataURL(this.modalCard.changeImage);
+      }
+    },
+    async updateCardImage() {
+      if (this.modalCard.changeImage) {
+        let formData = new FormData();
+        formData.append('image', this.modalCard.changeImage);
+        try {
+          // Content-Type: multipart/form-data 헤더와 함께 이미지 데이터 전송
+          await axios.put("/cards/"+this.modalCard.id+"/imageUpload", formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          this.modalCard.image=this.modalCard.previewImage;
+          this.isCardImageModalOpen=false;
+          this.modalCard.previewImage=null;
+          this.modalCard.changeImage=null;
 
+
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    closeCardImageModal(){
+      this.isCardImageModalOpen=false;
+      this.modalCard.previewImage=null;
+      this.modalCard.changeImage=null;
+    },
+    addImage(){
+      this.isCardImageModalOpen=true;
+    },
     openAddAreaModal() {
       this.isAddAreaModalOpen = true;
     },
@@ -371,31 +436,39 @@ export default {
     closeAddCardModal() {
       this.isAddCardModalOpen = false;
     },
-    openDetailCardModal(id, title, content, cardUsers, comments, username, image) {
-      console.log(this.modalCard)
-      this.modalCard.id = id;
+
+
+    openDetailCardModal(title, content, cardUsers, comments, username,image, id) {
       this.modalCard.title = '';
       this.modalCard.content = '';
       this.modalCard.username = '';
-      this.modalCard.image = '';
+      this.modalCard.id = '';
+      this.modalCard.image = null;
+      this.modalCard.previewImage = null;
+      this.modalCard.changeImage = null;
       this.modalCard.comments=[];
-      this.modalCard.cardUsers=cardUsers;
       this.show1=false;
       this.show2=false;
       this.message='';
 
+      this.modalCard.id = id;
       this.modalCard.title = title;
       this.modalCard.content = content;
       this.modalCard.username = username;
       this.modalCard.image = image;
       this.modalCard.comments.push(comments);
+       this.modalCard.cardUsers=cardUsers;
       this.isDetailCardModalOpen = true;
       console.log(this.modalCard.cardUsers)
     },
     closeDetailCardModal() {
+      this.modalCard.id = '';
       this.modalCard.title = '';
       this.modalCard.content = '';
       this.modalCard.username = '';
+      this.modalCard.image = null;
+      this.modalCard.previewImage = null;
+      this.modalCard.changeImage = null;
       this.modalCard.comments=[];
       this.modalCard.cardUsers=[];
       this.show1=false;
