@@ -1,7 +1,7 @@
 <template>
-  <v-app>
+  <v-app >
     <v-app-bar app style="margin-top: 64px">
-      <BoardHeaderComponent :board="board"/>
+      <BoardHeaderComponent :board="board" :isAuthor="isAuthor" @boardChanged="handleBoardChange"/>
     </v-app-bar>
 
     <v-main style="padding: 0px">
@@ -276,6 +276,11 @@ export default {
   },
   name: "BoardView",
   components: {AddAreaComponent, AreaComponent, HeaderComponent, BoardHeaderComponent},
+  computed: {
+    isAuthor() {
+      return window.localStorage.getItem("username") === this.board.author;
+    }
+  },
   data() {
     return {
       areaId: 0,
@@ -415,8 +420,11 @@ export default {
       } catch (error) {
         console.error('Error fetching board:', error);
       }
+    },
+    handleBoardChange(board) {
+      // 여기서 boardId를 사용할 수 있습니다.
+      this.$emit('boardChanged', board);
     }
-
   }
 
 }

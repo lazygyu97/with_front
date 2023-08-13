@@ -6,7 +6,6 @@
         elevate-on-scroll
         scroll-target="#scrolling-techniques-7"
     >
-
       <router-link to="/home">
         <v-img
             lazy-src="../assets/logo.png"
@@ -15,25 +14,18 @@
             src="../assets/logo.png"
         ></v-img>
       </router-link>
-
       <v-spacer></v-spacer>
-
-
         <v-btn
             v-show="isValidUser"
             elevation="2"
             @click="logout"
         >Logout
         </v-btn>
-
-
     </v-app-bar>
-
   </v-card>
 </template>
 
 <script>
-import axios from "@/axios/axios-instance";
 import Cookies from "js-cookie";
 
 export default {
@@ -52,22 +44,12 @@ export default {
       window.localStorage.removeItem("username");
       window.localStorage.removeItem("userImage");
       Cookies.remove("refreshToken");
-      window.location.href = '/';
-
+      this.checkValidUser()
+      this.$router.push('/');
     },
     async checkValidUser() {
-      try {
-        if(window.localStorage.getItem("username") !== null){
-          this.isValidUser = true;
-        }
-        await axios.get("users")
-            .then(response => {
-              console.log(response.data.username)
-              this.isValidUser = true;
-            })
-      } catch (error) {
-        await this.$router.push('/');
-      }
+      this.isValidUser = window.localStorage.getItem("accessToken") !== null
+          && window.localStorage.getItem("accesToken") !== "undefined";
     }
   },
 }

@@ -12,6 +12,11 @@ const routes = [
     component: () => import('../views/LoginView.vue')
   },
   {
+    path: '/oauth2',
+    name: 'oauth2',
+    component: () => import('../views/OAuth2.vue')
+  },
+  {
     path: '/signup',
     name: 'signup',
     component: () => import('../views/SignupView.vue')
@@ -39,13 +44,15 @@ router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // 토큰 유효성 검사 로직 구현
     try {
-      await axios.get("users")
-      .then(response => {
-        window.localStorage.setItem('username', response.data.username);
-        window.localStorage.setItem('userImage', response.data.userImage);
-        next();
-      })
-    } catch (error) {
+      await axios.get("/users")
+          .then(response => {
+            console.log(response)
+            window.localStorage.setItem('username', response.data.username);
+            window.localStorage.setItem('userImage', response.data.image);
+            next();
+          })
+    } catch (error){
+
       console.log(error);
       alert("로그인이 필요합니다.")
       window.location.href = '/';

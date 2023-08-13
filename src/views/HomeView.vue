@@ -2,7 +2,7 @@
 
   <v-app>
     <v-navigation-drawer style="overflow: hidden !important;" app>
-      <SideBarComponent :boards="boards" @showDetailBoard="showBoardDetail" />
+      <SideBarComponent :boards="boards" :withBoards="withBoards" @showDetailBoard="showBoardDetail" @boardChanged="handleBoardChange"/>
     </v-navigation-drawer>
     <v-content style="margin: 0;padding: 0;">
       <BoardView
@@ -10,7 +10,7 @@
           ref="board"
           :board="board"
           :style="{ backgroundColor: lightBackgroundColor }"
-
+          @boardChanged="handleBoardChange"
       />
     </v-content>
   </v-app>
@@ -38,6 +38,7 @@ export default {
   data() {
     return {
       boards: [],
+      withBoards: [],
       areas: [],
       board: [],
       backgroundColor: 'white',  // 초기값을 white로 설정
@@ -45,7 +46,8 @@ export default {
     };
   },
   mounted() {
-    this.fetchAreas();
+    this.fetchBoards();
+    this.fetchWithBoards();
   },
   computed: {
     lightBackgroundColor() {
@@ -68,13 +70,22 @@ export default {
   }
   ,
   methods: {
-    async fetchAreas() {
+    async fetchBoards() {
       try {
         await axios.get('/boards')
         .then(response => {
-          console.log(response.data.boards);
           this.boards = response.data.boards;
         }); // API 요청 예시
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async fetchWithBoards() {
+      try {
+        await axios.get('/boards/collaborators')
+            .then(response => {
+              this.withBoards = response.data.boards;
+            }); // API 요청 예시
       } catch (error) {
         console.error(error);
       }
@@ -92,7 +103,13 @@ export default {
         console.error('Error fetching board:', error);
       }
     },
-
+    handleBoardChange(board) {
+      // 여기서 boardId를 사용할 수 있습니다.
+      console.log(board);
+      this.fetchBoards();
+      this.board = board;
+      this.backgroundColor = this.board.color;
+    }
   },
 }
 </script>
