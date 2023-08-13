@@ -372,6 +372,11 @@ export default {
         }
       }
     },
+    closeCardImageModal(){
+      this.isCardImageModalOpen=false;
+      this.modalCard.previewImage=null;
+      this.modalCard.changeImage=null;
+    },
     addImage(){
       this.isCardImageModalOpen=true;
     },
@@ -415,6 +420,8 @@ export default {
       this.modalCard.username = '';
       this.modalCard.id = '';
       this.modalCard.image = null;
+      this.modalCard.previewImage = null;
+      this.modalCard.changeImage = null;
       this.modalCard.comments=[];
       this.modalCard.cardUsers=[];
 
@@ -438,6 +445,8 @@ export default {
       this.modalCard.content = '';
       this.modalCard.username = '';
       this.modalCard.image = null;
+      this.modalCard.previewImage = null;
+      this.modalCard.changeImage = null;
       this.modalCard.comments=[];
       this.modalCard.cardUsers=[];
       this.show1=false;
