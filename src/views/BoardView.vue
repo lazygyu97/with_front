@@ -89,7 +89,7 @@
           <v-btn style="margin-left: 75px;margin-top: 100px" @click="openAddAreaModal()">
             + Add Area
           </v-btn>
-          <v-btn @click="check"></v-btn>
+<!--          <v-btn @click="check"></v-btn>-->
         </v-row>
       </v-main>
     </div>
@@ -142,23 +142,23 @@
     <!-- Card 추가 모달-->
 
     <!-- Card 추가 모달-->
-<!--    <v-dialog v-model="isUpdateCardModalOpen" max-width="600px">-->
-<!--      <v-card>-->
-<!--        <v-card-title>-->
-<!--          {{ newArea.id ? 'Update Area' : 'Add New Card' }}-->
-<!--        </v-card-title>-->
-<!--        <v-card-text>-->
-<!--          <v-text-field v-model="newCard.title" label="Title"></v-text-field>-->
-<!--          <v-text-field v-model="newCard.content" label="Content"></v-text-field>-->
-<!--        </v-card-text>-->
-<!--        <v-card-actions>-->
-<!--          <v-btn @click="closeAddCardModal">Cancel</v-btn>-->
-<!--          <v-btn color="primary" @click="addCard">-->
-<!--            {{ newArea.id ? 'Update' : 'Add' }}-->
-<!--          </v-btn>-->
-<!--        </v-card-actions>-->
-<!--      </v-card>-->
-<!--    </v-dialog>-->
+    <!--    <v-dialog v-model="isUpdateCardModalOpen" max-width="600px">-->
+    <!--      <v-card>-->
+    <!--        <v-card-title>-->
+    <!--          {{ newArea.id ? 'Update Area' : 'Add New Card' }}-->
+    <!--        </v-card-title>-->
+    <!--        <v-card-text>-->
+    <!--          <v-text-field v-model="newCard.title" label="Title"></v-text-field>-->
+    <!--          <v-text-field v-model="newCard.content" label="Content"></v-text-field>-->
+    <!--        </v-card-text>-->
+    <!--        <v-card-actions>-->
+    <!--          <v-btn @click="closeAddCardModal">Cancel</v-btn>-->
+    <!--          <v-btn color="primary" @click="addCard">-->
+    <!--            {{ newArea.id ? 'Update' : 'Add' }}-->
+    <!--          </v-btn>-->
+    <!--        </v-card-actions>-->
+    <!--      </v-card>-->
+    <!--    </v-dialog>-->
     <!-- Card 추가 모달-->
 
     <!-- Card 디테일 모달-->
@@ -204,7 +204,7 @@
         <v-card-title style="font-size:30px;margin-bottom: 20px">
           <v-spacer/>
 
-            {{ modalCard.title }}&nbsp;<span style="font-size: 20px"> in {{ modalCard.area }}</span>
+          {{ modalCard.title }}&nbsp;<span style="font-size: 20px"> in {{ modalCard.area }}</span>
 
           <v-spacer/>
 
@@ -232,45 +232,49 @@
           </v-btn>
         </v-card-actions>
 
+        <v-expand-transition>
+          <div v-show="show1" style="display: flex; flex-direction: column; align-items: center;">
+            <v-col cols="8">
+              <!-- 검색창 -->
+              <div style="display: flex; align-items: center;">
+                <v-autocomplete
+                    v-model="selectedUser"
+                    :items="board.collaborators"
+                    label="Search for a user"
+                    item-text="nickname"
+                    :item-value="item => item"
+                    clearable
+                >
+                  <template v-slot:item="{ item }">
+                    <div class="user-item">
+                      <v-avatar class="user-avatar">
+                        <img :src="item.image" alt="user image">
+                      </v-avatar>
+                      {{ item.nickname }}
+                    </div>
+                  </template>
+                </v-autocomplete>
+                <!-- share 버튼 -->
+                <v-btn v-if="show1" @click="shareCard" style="margin-left: 10px;">share</v-btn>
+              </div>
 
-        <template>
-          <div>
-            <!-- 검색창 -->
-            <v-autocomplete
-                v-if="show1"
-                v-model="selectedUser"
-                :items="board.collaborators"
-                label="Search for a user"
-                item-text="nickname"
-                :item-value="item => item"
-                clearable
-
-            >
-              <template v-slot:item="{ item }">
-                <div class="user-item">
-                  <v-avatar class="user-avatar">
-                    <img :src="item.image" alt="user image">
-                  </v-avatar>
-                  {{ item.nickname }}
-                </div>
-              </template>
-            </v-autocomplete>
-            <!-- share 버튼 -->
-            <v-btn v-if="show1" @click="shareCard">share</v-btn>
-            <!-- 기존에 공유된 유저 목록 -->
-            <v-expand-transition>
-              <div v-if="modalCard.cardUsers && show1">
+              <!-- 기존에 공유된 유저 목록 -->
+              <div v-if="modalCard.cardUsers.length===0">
+                No collaborators
+              </div>
+              <div v-else>
                 <h4>Already shared with:</h4>
                 <ul>
-                  <li v-for="user in modalCard.cardUsers" :key="user.id">
+                  <li v-for="user in this.modalCard.cardUsers" :key="user.id">
                     {{ user.collaborator }}
-                    <v-btn small color="error" @click="removeCollaborator(user)">Remove</v-btn>
+                    <v-btn x-small color="error" @click="removeCollaborator(user)">Remove</v-btn>
                   </li>
                 </ul>
               </div>
-            </v-expand-transition>
+            </v-col>
           </div>
-        </template>
+        </v-expand-transition>
+
 
         <v-divider/>
 
@@ -438,7 +442,7 @@ import axios from "@/axios/axios-instance";
 
 export default {
   props: {
-    type:Array,
+    type: Array,
     board: {
       type: Object,
       required: true
@@ -494,7 +498,8 @@ export default {
     };
   },
   methods: {
-    openDetailCardModal(area,title, content, cardUsers, comments, checkLists, username, image, id) {
+    openDetailCardModal(area, title, content, cardUsers, comments, checkLists, username, image,
+        id) {
       this.modalCard.area = area;
       this.modalCard.id = id;
       this.modalCard.title = title;
@@ -507,7 +512,10 @@ export default {
         }
       }
       if (cardUsers.length != 0) {
-        this.modalCard.cardUsers.push(cardUsers);
+        for (var i in cardUsers) {
+          this.modalCard.cardUsers.push(cardUsers[i]);
+        }
+
       }
       if (checkLists.length != 0) {
         for (var i in checkLists) {
@@ -727,6 +735,30 @@ export default {
         alert(error.response.data)
       })
     },
+    async shareCard() {
+      console.log(this.selectedUser);
+      console.log(this.modalCard)
+      try {
+        await axios.put("/cards/" + this.modalCard.id + "/collaborators",
+            {userId: this.selectedUser.id})
+        this.modalCard.cardUsers.push(
+            {id: this.selectedUser.id, collaborator: this.selectedUser.nickname})
+        await this.reload();
+      } catch (error) {
+        alert(error)
+      }
+    },
+    async removeCollaborator(user) {
+      alert(user.id)
+      try {
+        await axios.delete("/cards/" + this.modalCard.id + "/collaborators",
+            {data: {userId: user.id}})
+        this.modalCard.cardUsers = this.modalCard.cardUsers.filter(u => u.id !== user.id);
+        await this.reload();
+      } catch (error) {
+        alert(error)
+      }
+    },
     async closeDialog() {
       this.modalCard.area = '';
       this.modalCard.title = '';
@@ -739,6 +771,7 @@ export default {
       this.modalCard.comments.length = 0;
       this.modalCard.cardUsers.length = 0;
       this.modalCard.checkLists.length = 0;
+      this.selectedUser.length = 0;
       this.show1 = false;
       this.show2 = false;
       this.show3 = false;
@@ -761,27 +794,8 @@ export default {
     handleBoardChange(board) {
       // 여기서 boardId를 사용할 수 있습니다.
       this.$emit('boardChanged', board);
-    },
-    async shareCard(){
-      console.log(this.selectedUser);
-      console.log(this.modalCard)
-      try{
-        await axios.put("/cards/" + this.modalCard.id + "/collaborators", {userId : this.selectedUser.id})
-        this.modalCard.cardUsers.push({id:this.selectedUser.id, collaborator: this.selectedUser.nickname})
-        await this.reload();
-      } catch (error) {
-        alert(error)
-      }
-    },
-    async removeCollaborator(user){
-      try{
-        await axios.delete("/cards/" + this.modalCard.id + "/collaborators", {data:{userId : user.id}})
-        this.modalCard.cardUsers = this.modalCard.cardUsers.filter(u => u.id !== user.id);
-        await this.reload();
-      } catch (error) {
-        alert(error)
-      }
     }
+
   }
 }
 
